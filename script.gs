@@ -29,3 +29,17 @@ async function generateUPSToken() {
     var data = JSON.parse(response)
     console.log(data["access_token"]);
 }
+
+function onOpen() {
+  SpreadsheetApp.getUi()
+      .createMenu('UPS Return Tool')
+      .addItem('Show sidebar', 'showSidebar')
+      .addToUi();
+}
+
+function showSidebar() {
+  var html = HtmlService.createHtmlOutputFromFile('sidebar')
+      .setTitle('UPS Return Tool');
+  SpreadsheetApp.getUi()
+      .showSidebar(html);
+}
