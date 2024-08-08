@@ -30,6 +30,10 @@ async function generateUPSToken() {
     console.log(data["access_token"]);
 }
 
+function getFormData(data) {
+  console.log(data)
+}
+
 function onOpen() {
   SpreadsheetApp.getUi()
       .createMenu('UPS Return Tool')
@@ -42,4 +46,5 @@ function showSidebar() {
       .setTitle('UPS Return Tool');
   SpreadsheetApp.getUi()
       .showSidebar(html);
+
 }
