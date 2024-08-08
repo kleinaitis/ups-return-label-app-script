@@ -1,8 +1,8 @@
-<form action="#">
+<form id="form">
     <fieldset>
         <legend>Enter the employee's email</legend>
         <div>
-            <input type="email" id="email" pattern=".+@redfin\.com" size="30" required />
+            <input type="email" id="user_email" name="user_email" required />
         </div>
     </fieldset>
 
@@ -12,23 +12,23 @@
         <legend>Type of return?</legend>
 
         <div>
-            <input type="radio" id="laptop" name="return_type" />
+            <input type="radio" id="laptop" name="return_type" value="laptop" required/>
             <label for="laptop">Laptop</label>
         </div>
 
         <div>
-            <input type="radio" id="ipad" name="return_type"/>
+            <input type="radio" id="ipad" name="return_type" value="ipad"/>
             <label for="ipad">iPad</label>
         </div>
 
         <div>
-            <input type="radio" id="peripherals" name="return_type" />
+            <input type="radio" id="peripherals" name="return_type" value="peripherals"/>
             <label for="peripherals">Peripherals</label>
         </div>
     </fieldset>
 
     <br>
 
-    <input type="submit" value="Create Return Label"/>
+    <input type="submit" value="Create Return Label" onclick="google.script.run.getFormData(this.parentNode)"/>
 
 </form>
