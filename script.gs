@@ -30,8 +30,18 @@ async function generateUPSToken() {
     console.log(data["access_token"]);
 }
 
-function getFormData(data) {
-  console.log(data)
+// function getFormData(data) {
+//   return data
+// }
+
+function createUPSReturnLabel(form_data) {
+  var userEmail = form_data["user_email"]
+  var packageType = form_data["return_type"]
+  var currentSheet = SpreadsheetApp.getActiveSheet();
+  var textFinder = currentSheet.createTextFinder(userEmail)
+  var rowNumber = parseInt(textFinder.findNext().getRow())
+  var user_data = currentSheet.getRange(rowNumber, 1, 1, 8).getValues()
+  Logger.log(user_data)
 }
 
 function onOpen() {
