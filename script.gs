@@ -27,15 +27,90 @@ async function generateUPSToken() {
 
     const response = await UrlFetchApp.fetch(url, options).getContentText();
     var data = JSON.parse(response)
-    console.log(data["access_token"]);
+    return data["access_token"];
 }
 
-function createUPSReturnLabel(form_data) {
+async function createUPSReturnLabel(form_data) {
   var userEmail = form_data["user_email"]
   var packageType = form_data["return_type"]
   var userData = parseSheetForEmail(userEmail)
-  console.log(userData)
+
+  // Parameters require "v2403" as version as per
+  const version = 'v2403';
+
+  const token = generateUPSToken()
+
+  var url = `https://onlinetools.ups.com/api/shipments/${version}/ship`;
+
+  var options = {
+    "method": "post",
+    "payload": formData,
+    "headers": {
+        "Content-Type": 'application/json',
+        "Authorization": 'Bearer ' + token,
+        "transactionSrc": 'testing',
+        "transId": '1234'
+        },
+    "body": JSON.stringify({
+    ShipmentRequest: {
+      Request: {
+        RequestOption: 'nonvalidate',
+      },
+      Shipment: {
+        // 8 =  UPS Electronic Return Label (ERL)
+        ReturnService: '8',
+        Shipper: {
+          Name: 'Redfin',
+          AttentionName: 'Redfin IT',
+          //ADD AS A PROPERTY
+          ShipperNumber: '',
+          Address: {
+            AddressLine: ['1099 Stewart St #600'],
+            City: 'Seattle',
+            StateProvinceCode: 'WA',
+            PostalCode: '98101',
+            CountryCode: 'US'
+          }
+        },
+        ShipTo: {
+          Name: `${userData[0]}`,
+          EMailAddress: `${userData[1]}`,
+          Address: {
+            AddressLine: [`${userData[3]} + ${userData[4]}`],
+            City: `${userData[5]}`,
+            StateProvinceCode: `${userData[6]}`,
+            PostalCode: `${userData[7]}`,
+            CountryCode: 'US'
+          },
+        },
+        Service: {
+          // 03 = Ground
+          Code: '03',
+        },
+        Package: {
+          Description: `TICKET NUMBER HERE`,
+          Packaging: {
+            // 02 = Customer Supplied Packaged
+            Code: '02',
+          },
+          PackageWeight: {
+            UnitOfMeasurement: {
+              Code: 'LBS',
+              Description: 'Pounds'
+            },
+            //FORM DATA HERE
+            Weight: '5'
+          }
+        }
+      },
+    }
+  })
 }
+  const response = await UrlFetchApp.fetch(url, options).getContentText();
+  var data = JSON.parse(response)
+  console.log(data["access_token"]);
+
+};
 
 function parseSheetForEmail(email) {
   var currentSheet = SpreadsheetApp.getActiveSheet();
