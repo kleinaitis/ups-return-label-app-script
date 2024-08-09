@@ -35,7 +35,7 @@ async function createUPSReturnLabel(form_data) {
   var packageType = form_data["return_type"]
   var userData = parseSheetForEmail(userEmail)
 
-  // Parameters require "v2403" as version as per
+  // Parameters require "v2403" as version as per https://developer.ups.com/api/reference?loc=en_US#operation/Shipment
   const version = 'v2403';
 
   const token = generateUPSToken()
