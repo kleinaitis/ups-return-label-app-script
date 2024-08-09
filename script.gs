@@ -30,18 +30,25 @@ async function generateUPSToken() {
     console.log(data["access_token"]);
 }
 
-// function getFormData(data) {
-//   return data
-// }
-
 function createUPSReturnLabel(form_data) {
   var userEmail = form_data["user_email"]
   var packageType = form_data["return_type"]
+  var userData = parseSheetForEmail(userEmail)
+  console.log(userData)
+}
+
+function parseSheetForEmail(email) {
   var currentSheet = SpreadsheetApp.getActiveSheet();
-  var textFinder = currentSheet.createTextFinder(userEmail)
-  var rowNumber = parseInt(textFinder.findNext().getRow())
-  var user_data = currentSheet.getRange(rowNumber, 1, 1, 8).getValues()
-  Logger.log(user_data)
+  var textFinder = currentSheet.createTextFinder(email)
+  var foundRange = textFinder.findNext();
+
+  if (foundRange) {
+    var rowNumber = foundRange.getRow();
+    var userData = currentSheet.getRange(rowNumber, 1, 1, 8).getValues().flat()
+    return userData
+  } else {
+      SpreadsheetApp.getUi().alert(`${email} was not found within the sheet.\n Please enter a different email address and try again.`);
+  }
 }
 
 function onOpen() {
