@@ -34,6 +34,7 @@ async function createUPSReturnLabel(form_data) {
   var userEmail = form_data["user_email"]
   var packageType = form_data["return_type"]
   var userData = parseSheetForEmail(userEmail)
+  var ticketNumber = form_data["ticket_number"]
 
   // Parameters require "v2403" as version as per https://developer.ups.com/api/reference?loc=en_US#operation/Shipment
   const version = 'v2403';
@@ -62,8 +63,7 @@ async function createUPSReturnLabel(form_data) {
         Shipper: {
           Name: 'Redfin',
           AttentionName: 'Redfin IT',
-          //ADD AS A PROPERTY
-          ShipperNumber: '',
+          ShipperNumber: `${documentProperties.getProperty('UPS_ACCOUNT_NUMBER')}`,
           Address: {
             AddressLine: ['1099 Stewart St #600'],
             City: 'Seattle',
@@ -78,7 +78,7 @@ async function createUPSReturnLabel(form_data) {
           Address: {
             AddressLine: [`${userData[3]} + ${userData[4]}`],
             City: `${userData[5]}`,
-            StateProvinceCode: `${userData[6]}`,
+            StateProvinceCode: `${stateNameToAbbreviation(userData[6])}`,
             PostalCode: `${userData[7]}`,
             CountryCode: 'US'
           },
@@ -88,7 +88,7 @@ async function createUPSReturnLabel(form_data) {
           Code: '03',
         },
         Package: {
-          Description: `TICKET NUMBER HERE`,
+          Description: `${ticketNumber}`,
           Packaging: {
             // 02 = Customer Supplied Packaged
             Code: '02',
@@ -124,6 +124,75 @@ function parseSheetForEmail(email) {
   } else {
       SpreadsheetApp.getUi().alert(`${email} was not found within the sheet.\n Please enter a different email address and try again.`);
   }
+}
+
+function stateNameToAbbreviation(name) {
+	let states = {
+		"arizona": "AZ",
+		"alabama": "AL",
+		"alaska": "AK",
+		"arkansas": "AR",
+		"california": "CA",
+		"colorado": "CO",
+		"connecticut": "CT",
+		"district of columbia": "DC",
+		"delaware": "DE",
+		"florida": "FL",
+		"georgia": "GA",
+		"hawaii": "HI",
+		"idaho": "ID",
+		"illinois": "IL",
+		"indiana": "IN",
+		"iowa": "IA",
+		"kansas": "KS",
+		"kentucky": "KY",
+		"louisiana": "LA",
+		"maine": "ME",
+		"maryland": "MD",
+		"massachusetts": "MA",
+		"michigan": "MI",
+		"minnesota": "MN",
+		"mississippi": "MS",
+		"missouri": "MO",
+		"montana": "MT",
+		"nebraska": "NE",
+		"nevada": "NV",
+		"new hampshire": "NH",
+		"new jersey": "NJ",
+		"new mexico": "NM",
+		"new york": "NY",
+		"north carolina": "NC",
+		"north dakota": "ND",
+		"ohio": "OH",
+		"oklahoma": "OK",
+		"oregon": "OR",
+		"pennsylvania": "PA",
+		"rhode island": "RI",
+		"south carolina": "SC",
+		"south dakota": "SD",
+		"tennessee": "TN",
+		"texas": "TX",
+		"utah": "UT",
+		"vermont": "VT",
+		"virginia": "VA",
+		"washington": "WA",
+		"west virginia": "WV",
+		"wisconsin": "WI",
+		"wyoming": "WY",
+		"american samoa": "AS",
+		"guam": "GU",
+		"northern mariana islands": "MP",
+		"puerto rico": "PR",
+		"us virgin islands": "VI",
+		"us minor outlying islands": "UM"
+	}
+
+	let a = name.trim().replace(/[^\w ]/g, "").toLowerCase();
+	if(states[a] !== null) {
+		return states[a];
+	}
+
+	return null;
 }
 
 function onOpen() {
