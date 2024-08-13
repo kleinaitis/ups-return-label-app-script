@@ -1,7 +1,7 @@
 // Call during first use to set up properties
 function setEnvironmentalVariables() {
     var documentProperties = PropertiesService.getDocumentProperties();
-    var newProperties = {UPS_CLIENT_ID: '', UPS_CLIENT_SECRET: ''};
+    var newProperties = {UPS_CLIENT_ID: '', UPS_CLIENT_SECRET: '', UPS_ACCOUNT_NUMBER: ''};
     documentProperties.setProperties(newProperties);
 }
 
@@ -129,7 +129,7 @@ function parseSheetForEmail(email) {
 function onOpen() {
   SpreadsheetApp.getUi()
       .createMenu('UPS Return Tool')
-      .addItem('Show sidebar', 'showSidebar')
+      .addItem('Create Return Label', 'showSidebar')
       .addToUi();
 }
 
