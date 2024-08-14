@@ -31,39 +31,54 @@ async function generateUPSToken() {
 }
 
 async function createUPSReturnLabel(form_data) {
+  var documentProperties = PropertiesService.getDocumentProperties();
   var userEmail = form_data["user_email"]
-  var packageType = form_data["return_type"]
+  var returnType = form_data["return_type"]
   var userData = parseSheetForEmail(userEmail)
   var ticketNumber = form_data["ticket_number"]
 
   // Parameters require "v2403" as version as per https://developer.ups.com/api/reference?loc=en_US#operation/Shipment
   const version = 'v2403';
 
-  const token = generateUPSToken()
-
-  var url = `https://onlinetools.ups.com/api/shipments/${version}/ship`;
+  const token = await generateUPSToken()
+  var auth = 'Bearer ' + token
+  var url = `https://onlinetools.ups.com/api/shipments/${version}/ship?additionaladdressvalidation=JeffK-Redfin-API`;
 
   var options = {
+    //muteHttpExceptions: true,
     "method": "post",
-    "payload": formData,
     "headers": {
         "Content-Type": 'application/json',
-        "Authorization": 'Bearer ' + token,
-        "transactionSrc": 'testing',
-        "transId": '1234'
+        transactionSrc: 'testing',
+        transId: '1234',
+        Authorization: auth
         },
-    "body": JSON.stringify({
+    "payload": JSON.stringify({
     ShipmentRequest: {
+      LabelSpecification: {
+        HTTPUserAgent: 'Mozilla/4.5',
+        LabelImageFormat: {
+          Code: 'EPL',
+        },
+        LabelStockSize: {
+          Height: '6',
+          Width: '4'
+        }
+      },
       Request: {
         RequestOption: 'nonvalidate',
       },
       Shipment: {
+        Description: 'Redfin IT Equipment',
         // 8 =  UPS Electronic Return Label (ERL)
-        ReturnService: '8',
+        ReturnService: {
+          Code: '8',
+        },
         Shipper: {
           Name: 'Redfin',
           AttentionName: 'Redfin IT',
           ShipperNumber: `${documentProperties.getProperty('UPS_ACCOUNT_NUMBER')}`,
+          EMailAddress: 'jeff.kleinaitis.redfin@titleforward.com',
           Address: {
             AddressLine: ['1099 Stewart St #600'],
             City: 'Seattle',
@@ -72,44 +87,69 @@ async function createUPSReturnLabel(form_data) {
             CountryCode: 'US'
           }
         },
-        ShipTo: {
-          Name: `${userData[0]}`,
-          EMailAddress: `${userData[1]}`,
-          Address: {
-            AddressLine: [`${userData[3]} + ${userData[4]}`],
-            City: `${userData[5]}`,
-            StateProvinceCode: `${stateNameToAbbreviation(userData[6])}`,
-            PostalCode: `${userData[7]}`,
-            CountryCode: 'US'
-          },
+      ShipTo: {
+        Name: `${userData[0]}`,
+        EMailAddress: `${userData[1]}`,
+        Address: {
+          AddressLine: [`${userData[3]} + ${userData[4]}`],
+          City: `${userData[5]}`,
+          StateProvinceCode: `${stateNameToAbbreviation(userData[6])}`,
+          PostalCode: `${userData[7]}`,
+          CountryCode: 'US'
         },
-        Service: {
-          // 03 = Ground
-          Code: '03',
+      },
+      ShipFrom: {
+        Name: 'Redfin',
+        Address: {
+          AddressLine: ['1099 Stewart St #600'],
+          City: 'Seattle',
+          StateProvinceCode: 'WA',
+          PostalCode: '98101',
+          CountryCode: 'US'
         },
-        Package: {
-          Description: `${ticketNumber}`,
-          Packaging: {
-            // 02 = Customer Supplied Packaged
-            Code: '02',
-          },
-          PackageWeight: {
-            UnitOfMeasurement: {
-              Code: 'LBS',
-              Description: 'Pounds'
-            },
-            //FORM DATA HERE
-            Weight: '5'
+      },
+      PaymentInformation: {
+          ShipmentCharge: {
+            // 01 = Transportation
+            Type: '01',
+            BillShipper: {
+              AccountNumber: `${documentProperties.getProperty('UPS_ACCOUNT_NUMBER')}`,
+            }
           }
+        },
+      Service: {
+        // 03 = Ground
+        Code: '03',
+      },
+      Package: {
+        Description: [`${ticketNumber}`],
+        Packaging: {
+          // 02 = Customer Supplied Packaged
+          Code: '02',
+        },
+        PackageWeight: {
+          UnitOfMeasurement: {
+            Code: 'LBS',
+            Description: 'Pounds'
+          },
+          Weight: `${returnTypeToWeight(returnType)}`
         }
+      },
+      ShipmentServiceOptions: {
+        LabelDelivery: {
+          EMail: {
+            EMailAddress: `${userData[1]}`,
+          }
+        },
+      },
       },
     }
   })
 }
   const response = await UrlFetchApp.fetch(url, options).getContentText();
   var data = JSON.parse(response)
-  console.log(data["access_token"]);
-
+  console.log(data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"]);
+  console.log(data["ShipmentResponse"]["Response"]["ResponseStatus"]);
 };
 
 function parseSheetForEmail(email) {
@@ -195,6 +235,17 @@ function stateNameToAbbreviation(name) {
 	return null;
 }
 
+function returnTypeToWeight(return_type) {
+  switch(return_type) {
+    case `laptop`:
+      return '5';
+    case `ipad`:
+      return '3';
+    case `peripherals`:
+      return '5';
+  }
+}
+
 function onOpen() {
   SpreadsheetApp.getUi()
       .createMenu('UPS Return Tool')
@@ -207,5 +258,4 @@ function showSidebar() {
       .setTitle('UPS Return Tool');
   SpreadsheetApp.getUi()
       .showSidebar(html);
-
 }
