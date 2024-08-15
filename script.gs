@@ -45,7 +45,6 @@ async function createUPSReturnLabel(form_data) {
   var url = `https://onlinetools.ups.com/api/shipments/${version}/ship?additionaladdressvalidation=JeffK-Redfin-API`;
 
   var options = {
-    //muteHttpExceptions: true,
     "method": "post",
     "headers": {
         "Content-Type": 'application/json',
@@ -87,19 +86,19 @@ async function createUPSReturnLabel(form_data) {
             CountryCode: 'US'
           }
         },
-      ShipTo: {
+      ShipFrom: {
         Name: `${userData[0]}`,
         EMailAddress: `${userData[1]}`,
         Address: {
-          AddressLine: [`${userData[3]} + ${userData[4]}`],
+          AddressLine: [`${userData[3]}, ${userData[4]}`],
           City: `${userData[5]}`,
           StateProvinceCode: `${stateNameToAbbreviation(userData[6])}`,
           PostalCode: `${userData[7]}`,
           CountryCode: 'US'
         },
       },
-      ShipFrom: {
-        Name: 'Redfin',
+      ShipTo: {
+        Name: 'Redfin IT',
         Address: {
           AddressLine: ['1099 Stewart St #600'],
           City: 'Seattle',
@@ -227,6 +226,7 @@ function stateNameToAbbreviation(name) {
 		"us minor outlying islands": "UM"
 	}
 
+  //Trim, remove all non-word characters with the exception of spaces, and convert to lowercase
 	let a = name.trim().replace(/[^\w ]/g, "").toLowerCase();
 	if(states[a] !== null) {
 		return states[a];
