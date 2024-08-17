@@ -244,12 +244,6 @@ function stateNameToAbbreviation(name) {
 		"west virginia": "WV",
 		"wisconsin": "WI",
 		"wyoming": "WY",
-		"american samoa": "AS",
-		"guam": "GU",
-		"northern mariana islands": "MP",
-		"puerto rico": "PR",
-		"us virgin islands": "VI",
-		"us minor outlying islands": "UM"
 	}
 
   //Trim, remove all non-word characters with the exception of spaces, and convert to lowercase
