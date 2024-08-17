@@ -24,10 +24,18 @@ async function generateUPSToken() {
           "Authorization": auth,
           },
       };
-
-    const response = await UrlFetchApp.fetch(url, options).getContentText();
-    var data = JSON.parse(response)
-    return data["access_token"];
+    try {
+      const response = await UrlFetchApp.fetch(url, options);
+      if (response.getResponseCode() === 200) {
+        var content = response.getContentText();
+        var data = JSON.parse(content)
+        return data["access_token"]
+      } else {
+        SpreadsheetApp.getUi().alert('Error authenticating UPS credentials');
+      }
+    } catch (error) {
+      SpreadsheetApp.getUi().alert('Error authenticating UPS credentials \n Error: \n' + error);
+}
 }
 
 async function createUPSReturnLabel(form_data) {
@@ -35,14 +43,19 @@ async function createUPSReturnLabel(form_data) {
   var userEmail = form_data["user_email"]
   var returnType = form_data["return_type"]
   var userData = parseSheetForEmail(userEmail)
-  var ticketNumber = form_data["ticket_number"]
+  let ticketNumber;
+    if (form_data["ticket_number"]) {
+      ticketNumber = form_data["ticket_number"]
+    } else {
+      ticketNumber = 'n/a'
+    }
 
   // Parameters require "v2403" as version as per https://developer.ups.com/api/reference?loc=en_US#operation/Shipment
   const version = 'v2403';
 
   const token = await generateUPSToken()
   var auth = 'Bearer ' + token
-  var url = `https://onlinetools.ups.com/api/shipments/${version}/ship?additionaladdressvalidation=JeffK-Redfin-API`;
+  var url = `https://onlinetools.ups.com/api/shipments/${version}/ship`;
 
   var options = {
     "method": "post",
@@ -121,7 +134,10 @@ async function createUPSReturnLabel(form_data) {
         Code: '03',
       },
       Package: {
-        Description: [`${ticketNumber}`],
+        ReferenceNumber: {
+          Value: `${ticketNumber}`,
+        },
+        Description: 'Equipment',
         Packaging: {
           // 02 = Customer Supplied Packaged
           Code: '02',
@@ -145,10 +161,18 @@ async function createUPSReturnLabel(form_data) {
     }
   })
 }
-  const response = await UrlFetchApp.fetch(url, options).getContentText();
-  var data = JSON.parse(response)
-  console.log(data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"]);
-  console.log(data["ShipmentResponse"]["Response"]["ResponseStatus"]);
+  try {
+    const response = await UrlFetchApp.fetch(url, options);
+    if (response.getResponseCode() === 200) {
+      var content = response.getContentText();
+      var data = JSON.parse(content)
+      SpreadsheetApp.getUi().alert(`Return shipping label was successfully sent to ${userData[1]}. Tracking number: ${data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"]}`);
+    } else {
+      SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.');
+    }
+  } catch (error) {
+    SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.\n Error: \n' + error);
+}
 };
 
 function parseSheetForEmail(email) {
