@@ -167,8 +167,10 @@ async function createUPSReturnLabel(form_data) {
       var content = response.getContentText();
       var data = JSON.parse(content)
       SpreadsheetApp.getUi().alert(`Return shipping label was successfully sent to ${userData[1]}. Tracking number: ${data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"]}`);
+      showSidebar()
     } else {
       SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.');
+      showSidebar()
     }
   } catch (error) {
     SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.\n Error: \n' + error);
@@ -176,13 +178,13 @@ async function createUPSReturnLabel(form_data) {
 };
 
 function parseSheetForEmail(email) {
-  var currentSheet = SpreadsheetApp.getActiveSheet();
-  var textFinder = currentSheet.createTextFinder(email)
+  var targetSheet = SpreadsheetApp.getActive().getSheetByName('rplSelect');;
+  var textFinder = targetSheet.createTextFinder(email)
   var foundRange = textFinder.findNext();
 
   if (foundRange) {
     var rowNumber = foundRange.getRow();
-    var userData = currentSheet.getRange(rowNumber, 1, 1, 8).getValues().flat()
+    var userData = targetSheet.getRange(rowNumber, 1, 1, 8).getValues().flat()
     return userData
   } else {
       SpreadsheetApp.getUi().alert(`${email} was not found within the sheet.\n Please enter a different email address and try again.`);
