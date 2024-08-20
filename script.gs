@@ -166,6 +166,7 @@ async function createUPSReturnLabel(form_data) {
     if (response.getResponseCode() === 200) {
       var content = response.getContentText();
       var data = JSON.parse(content)
+      console.log(`Return shipping label was successfully sent to ${userData[1]}. Tracking number: ${data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"]}`);
       SpreadsheetApp.getUi().alert(`Return shipping label was successfully sent to ${userData[1]}. Tracking number: ${data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"]}`);
       showSidebar()
     } else {
@@ -188,6 +189,7 @@ function parseSheetForEmail(email) {
     return userData
   } else {
       SpreadsheetApp.getUi().alert(`${email} was not found within the sheet.\n Please enter a different email address and try again.`);
+      showSidebar()
   }
 }
 
