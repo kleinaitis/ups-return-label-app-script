@@ -43,12 +43,15 @@ async function createUPSReturnLabel(form_data) {
   var userEmail = form_data["user_email"]
   var returnType = form_data["return_type"]
   var userData = parseSheetForEmail(userEmail)
+
   let ticketNumber;
     if (form_data["ticket_number"]) {
       ticketNumber = form_data["ticket_number"]
     } else {
       ticketNumber = 'n/a'
     }
+
+  let postalCode = postalCodeValidation(userData[7])
 
   // Parameters require "v2403" as version as per https://developer.ups.com/api/reference?loc=en_US#operation/Shipment
   const version = 'v2403';
@@ -103,10 +106,10 @@ async function createUPSReturnLabel(form_data) {
         Name: `${userData[0]}`,
         EMailAddress: `${userData[1]}`,
         Address: {
-          AddressLine: [`${userData[3]}, ${userData[4]}`],
+          AddressLine: [`${userData[3]} ${userData[4]}`],
           City: `${userData[5]}`,
           StateProvinceCode: `${stateNameToAbbreviation(userData[6])}`,
-          PostalCode: `${userData[7]}`,
+          PostalCode: postalCode,
           CountryCode: 'US'
         },
       },
@@ -166,7 +169,6 @@ async function createUPSReturnLabel(form_data) {
     if (response.getResponseCode() === 200) {
       var content = response.getContentText();
       var data = JSON.parse(content)
-      console.log(`Return shipping label was successfully sent to ${userData[1]}. Tracking number: ${data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"]}`);
       SpreadsheetApp.getUi().alert(`Return shipping label was successfully sent to ${userData[1]}. Tracking number: ${data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"]}`);
       showSidebar()
     } else {
@@ -192,6 +194,10 @@ function parseSheetForEmail(email) {
       showSidebar()
   }
 }
+
+function postalCodeValidation(postalCode) {
+    return postalCode.toString().padStart(5, '0');
+  }
 
 function stateNameToAbbreviation(name) {
 	let states = {
