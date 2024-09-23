@@ -24,23 +24,34 @@ async function generateUPSToken() {
           "Authorization": auth,
           },
       };
-
-    const response = await UrlFetchApp.fetch(url, options).getContentText();
-    var data = JSON.parse(response)
-    return data["access_token"];
+    try {
+      const response = await UrlFetchApp.fetch(url, options);
+      if (response.getResponseCode() === 200) {
+        var content = response.getContentText();
+        var data = JSON.parse(content)
+        return data["access_token"]
+      } else {
+        SpreadsheetApp.getUi().alert('Error authenticating UPS credentials');
+      }
+    } catch (error) {
+      SpreadsheetApp.getUi().alert('Error authenticating UPS credentials \n Error: \n' + error);
+}
 }
 
 async function createUPSReturnLabel(form_data) {
   var documentProperties = PropertiesService.getDocumentProperties();
   var userEmail = form_data["user_email"]
-  var returnType = form_data["return_type"]
+  var equipmentType = form_data["equipment_type"]
   var userData = parseSheetForEmail(userEmail)
+
   let ticketNumber;
     if (form_data["ticket_number"]) {
       ticketNumber = form_data["ticket_number"]
     } else {
       ticketNumber = 'n/a'
     }
+  let postalCode = postalCodeValidation(userData[7])
+  console.log(postalCode)
 
   // Parameters require "v2403" as version as per https://developer.ups.com/api/reference?loc=en_US#operation/Shipment
   const version = 'v2403';
@@ -95,10 +106,10 @@ async function createUPSReturnLabel(form_data) {
         Name: `${userData[0]}`,
         EMailAddress: `${userData[1]}`,
         Address: {
-          AddressLine: [`${userData[3]}, ${userData[4]}`],
+          AddressLine: [`${userData[3]} ${userData[4]}`],
           City: `${userData[5]}`,
           StateProvinceCode: `${stateNameToAbbreviation(userData[6])}`,
-          PostalCode: `${userData[7]}`,
+          PostalCode: postalCode,
           CountryCode: 'US'
         },
       },
@@ -139,7 +150,7 @@ async function createUPSReturnLabel(form_data) {
             Code: 'LBS',
             Description: 'Pounds'
           },
-          Weight: `${returnTypeToWeight(returnType)}`
+          Weight: `${equipmentTypeToWeight(equipmentType)}`
         }
       },
       ShipmentServiceOptions: {
@@ -159,8 +170,10 @@ async function createUPSReturnLabel(form_data) {
       var content = response.getContentText();
       var data = JSON.parse(content)
       SpreadsheetApp.getUi().alert(`Return shipping label was successfully sent to ${userData[1]}. Tracking number: ${data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"]}`);
+      showSidebar()
     } else {
       SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.');
+      showSidebar()
     }
   } catch (error) {
     SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.\n Error: \n' + error);
@@ -168,18 +181,23 @@ async function createUPSReturnLabel(form_data) {
 };
 
 function parseSheetForEmail(email) {
-  var currentSheet = SpreadsheetApp.getActiveSheet();
-  var textFinder = currentSheet.createTextFinder(email)
+  var targetSheet = SpreadsheetApp.getActive().getSheetByName('rplSelect');;
+  var textFinder = targetSheet.createTextFinder(email)
   var foundRange = textFinder.findNext();
 
   if (foundRange) {
     var rowNumber = foundRange.getRow();
-    var userData = currentSheet.getRange(rowNumber, 1, 1, 8).getValues().flat()
+    var userData = targetSheet.getRange(rowNumber, 1, 1, 8).getValues().flat()
     return userData
   } else {
       SpreadsheetApp.getUi().alert(`${email} was not found within the sheet.\n Please enter a different email address and try again.`);
+      showSidebar()
   }
 }
+
+function postalCodeValidation(postalCode) {
+    return postalCode.toString().padStart(5, '0');
+  }
 
 function stateNameToAbbreviation(name) {
 	let states = {
@@ -234,12 +252,6 @@ function stateNameToAbbreviation(name) {
 		"west virginia": "WV",
 		"wisconsin": "WI",
 		"wyoming": "WY",
-		"american samoa": "AS",
-		"guam": "GU",
-		"northern mariana islands": "MP",
-		"puerto rico": "PR",
-		"us virgin islands": "VI",
-		"us minor outlying islands": "UM"
 	}
 
   //Trim, remove all non-word characters with the exception of spaces, and convert to lowercase
@@ -251,8 +263,8 @@ function stateNameToAbbreviation(name) {
 	return null;
 }
 
-function returnTypeToWeight(return_type) {
-  switch(return_type) {
+function equipmentTypeToWeight(equipmentType) {
+  switch(equipmentType) {
     case `laptop`:
       return '5';
     case `ipad`:
