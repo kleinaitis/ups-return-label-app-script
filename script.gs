@@ -53,6 +53,8 @@ async function createUPSReturnLabel(form_data) {
   let postalCode = postalCodeValidation(userData[7])
   console.log(postalCode)
 
+  let postalCode = postalCodeValidation(userData[7])
+
   // Parameters require "v2403" as version as per https://developer.ups.com/api/reference?loc=en_US#operation/Shipment
   const version = 'v2403';
 
