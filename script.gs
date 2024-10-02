@@ -41,8 +41,29 @@ async function generateUPSToken() {
 async function createUPSReturnLabel(form_data) {
   var documentProperties = PropertiesService.getDocumentProperties();
   var userEmail = form_data["user_email"]
-  var returnType = form_data["return_type"]
+  var equipmentType = form_data["equipment_type"]
+  var labelDeliveryMethod = form_data["delivery_method"]
   var userData = parseSheetForEmail(userEmail)
+
+  let returnService;
+  let labelImageFormat;
+  let labelDelivery;
+
+    if (labelDeliveryMethod === "electronic") {
+    returnService = '8'
+    labelImageFormat = 'EPL'
+    labelDelivery = {
+      EMail: {
+        EMailAddress: `${userData[1]}`
+        }
+      }
+    } else if (labelDeliveryMethod === 'print'){
+    returnService = '9'
+    labelImageFormat = 'GIF'
+    labelDelivery = {
+      LabelLinksIndicator: ''
+      }
+    }
 
   let ticketNumber;
     if (form_data["ticket_number"]) {
@@ -50,8 +71,8 @@ async function createUPSReturnLabel(form_data) {
     } else {
       ticketNumber = 'n/a'
     }
-
   let postalCode = postalCodeValidation(userData[7])
+  console.log(postalCode)
 
   // Parameters require "v2403" as version as per https://developer.ups.com/api/reference?loc=en_US#operation/Shipment
   const version = 'v2403';
@@ -73,10 +94,10 @@ async function createUPSReturnLabel(form_data) {
       LabelSpecification: {
         HTTPUserAgent: 'Mozilla/4.5',
         LabelImageFormat: {
-          Code: 'EPL',
+          Code: labelImageFormat,
         },
         LabelStockSize: {
-          Height: '6',
+          Height: '8',
           Width: '4'
         }
       },
@@ -85,9 +106,8 @@ async function createUPSReturnLabel(form_data) {
       },
       Shipment: {
         Description: 'Redfin IT Equipment',
-        // 8 =  UPS Electronic Return Label (ERL)
         ReturnService: {
-          Code: '8',
+          Code: returnService,
         },
         Shipper: {
           Name: 'Redfin',
@@ -150,14 +170,12 @@ async function createUPSReturnLabel(form_data) {
             Code: 'LBS',
             Description: 'Pounds'
           },
-          Weight: `${returnTypeToWeight(returnType)}`
+          Weight: `${equipmentTypeToWeight(equipmentType)}`
         }
       },
       ShipmentServiceOptions: {
         LabelDelivery: {
-          EMail: {
-            EMailAddress: `${userData[1]}`,
-          }
+          labelDelivery
         },
       },
       },
@@ -169,12 +187,27 @@ async function createUPSReturnLabel(form_data) {
     if (response.getResponseCode() === 200) {
       var content = response.getContentText();
       var data = JSON.parse(content)
-      SpreadsheetApp.getUi().alert(`Return shipping label was successfully sent to ${userData[1]}. Tracking number: ${data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"]}`);
-      showSidebar()
-    } else {
+
+      if (labelDeliveryMethod === 'electronic') {
+        // Process for electronic return label creation
+        showDialog(userData[1], data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"], labelDeliveryMethod)
+        showSidebar();
+      } else if (labelDeliveryMethod === 'print') {
+          // Process for physical return label creation
+          var folder = DriveApp.getFoldersByName('UPS Return Tool - Labels').next();
+          results = data["ShipmentResponse"]["ShipmentResults"]["PackageResults"][0]["ShippingLabel"]["GraphicImage"]
+          var decodedResults = Utilities.base64Decode(results)
+          var finalResults = Utilities.newBlob(decodedResults)
+          var file = folder.createFile(finalResults.setName(`${userData[0]}'s Return Label.pdf`));
+          var fileUrl = file.getUrl();
+          showDialog(userData[1], fileUrl, labelDeliveryMethod)
+          }
+        } else {
+      // Handle unsuccessful response
       SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.');
       showSidebar()
     }
+    // Handle error
   } catch (error) {
     SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.\n Error: \n' + error);
 }
@@ -263,14 +296,14 @@ function stateNameToAbbreviation(name) {
 	return null;
 }
 
-function returnTypeToWeight(return_type) {
-  switch(return_type) {
+function equipmentTypeToWeight(equipmentType) {
+  switch(equipmentType) {
     case `laptop`:
       return '5';
     case `ipad`:
       return '3';
-    case `peripherals`:
-      return '5';
+    case `termination`:
+      return '10';
   }
 }
 
@@ -286,4 +319,39 @@ function showSidebar() {
       .setTitle('UPS Return Tool');
   SpreadsheetApp.getUi()
       .showSidebar(html);
+}
+
+function showDialog(usersName, identifier, labelDeliveryMethod) {
+   var htmlContent;
+   if (labelDeliveryMethod === 'electronic') {
+       // Message for electronic return label
+       htmlContent = `
+           <html>
+               <body>
+                   <p>Return shipping label was successfully created for ${usersName}.</p>
+                   <p>Tracking Number: <b>${identifier}<b></p>
+                   <button onclick="google.script.host.close()">Close</button>
+               </body>
+           </html>
+       `;
+   } else if (labelDeliveryMethod === 'print') {
+       // Message for print return label
+       htmlContent = `
+           <html>
+               <body>
+                   <p>Return shipping label was successfully created for ${usersName}.</p>
+                   <p>Download your label(s): <a href="${identifier}" target="_blank">${identifier}</a></p>
+                   <button onclick="google.script.host.close()">Close</button>
+               </body>
+           </html>
+       `;
+   }
+
+   // Create an HTML output object
+   var htmlOutput = HtmlService.createHtmlOutput(htmlContent)
+       .setWidth(300)
+       .setHeight(150);
+
+   // Show the modal dialog
+   SpreadsheetApp.getUi().showModalDialog(htmlOutput, 'Label Created');
 }
