@@ -42,7 +42,10 @@ async function createUPSReturnLabel(form_data) {
   var documentProperties = PropertiesService.getDocumentProperties();
   var userEmail = form_data["user_email"]
   var equipmentType = form_data["equipment_type"]
+<<<<<<< HEAD
   var labelDeliveryMethod = form_data["delivery_method"]
+=======
+>>>>>>> dd7fdcd7f1427bb03c01fa8b8953f7524c3d6fb0
   var userData = parseSheetForEmail(userEmail)
 
   let returnService;

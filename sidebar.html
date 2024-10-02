@@ -9,21 +9,35 @@
     <br>
 
     <fieldset>
-        <legend>Type of return</legend>
-
+        <legend>Type of equipment?</legend>
         <div>
-            <input type="radio" id="laptop" name="return_type" value="laptop" required/>
-            <label for="laptop">Laptop</label>
+            <input type="radio" id="laptop" name="equipment_type" value="laptop" required/>
+            <label for="laptop">Laptop (5 lbs)</label>
         </div>
 
         <div>
-            <input type="radio" id="ipad" name="return_type" value="ipad"/>
-            <label for="ipad">iPad</label>
+            <input type="radio" id="ipad" name="equipment_type" value="ipad"/>
+            <label for="ipad">iPad/Peripherals (3 lbs)</label>
         </div>
 
         <div>
-            <input type="radio" id="peripherals" name="return_type" value="peripherals"/>
-            <label for="peripherals">Peripherals</label>
+            <input type="radio" id="termination" name="equipment_type" value="termination"/>
+            <label for="termination">Termination (10 lbs)</label>
+        </div>
+    </fieldset>
+
+    <br>
+
+    <fieldset>
+        <legend>Label Delivery Method</legend>
+        <div>
+            <input type="radio" id="electronic" name="return_type" value="electronic" required/>
+            <label for="electronic">Electronic</label>
+        </div>
+
+        <div>
+            <input type="radio" id="print" name="return_type" value="print"/>
+            <label for="print">Print</label>
         </div>
     </fieldset>
 
