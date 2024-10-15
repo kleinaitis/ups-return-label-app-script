@@ -184,46 +184,65 @@ async function createUPSReturnLabel(form_data) {
   })
 }
   try {
-    const response = await UrlFetchApp.fetch(url, options);
-    if (response.getResponseCode() === 200) {
-      var content = response.getContentText();
-      var data = JSON.parse(content)
-
-      if (labelDeliveryMethod === 'electronic') {
-        // Process for electronic return label creation
-        showDialog(userData[1], data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"], labelDeliveryMethod)
-        showSidebar();
-      } else if (labelDeliveryMethod === 'print') {
-          // Process for physical return label creation
-          var folder = DriveApp.getFoldersByName('UPS Return Tool - Labels').next();
-          results = data["ShipmentResponse"]["ShipmentResults"]["PackageResults"][0]["ShippingLabel"]["GraphicImage"]
-          const secondResponse = await UrlFetchApp.fetch(url, options);
-          if (secondResponse.getResponseCode() === 200) {
-              var secondContent = secondResponse.getContentText();
-              var secondData = JSON.parse(secondContent)
-              secondResults = secondData["ShipmentResponse"]["ShipmentResults"]["PackageResults"][0]["ShippingLabel"]["GraphicImage"]
-          }
-          var returnLabelOne = `data:image/gif;base64,${results}`;
-          var returnLabelTwo = `data:image/gif;base64,${secondResults}`;
-          var htmlTemplate = HtmlService.createHtmlOutputFromFile('ups-template').getContent();
-          htmlTemplate = htmlTemplate.replace('RETURN_LABEL_ONE', returnLabelOne);
-          htmlTemplate = htmlTemplate.replace('RETURN_LABEL_TWO', returnLabelTwo);
-          var pdfBlob = Utilities.newBlob(htmlTemplate, 'text/html', 'return_label.html');
-          var file = folder.createFile(pdfBlob.getAs('application/pdf').setName(`${userData[0]}'s Return Label.pdf`));
-          var fileUrl = file.getUrl();
-          showDialog(userData[1], fileUrl, labelDeliveryMethod)
-          showSidebar()
-          }
-        } else {
-      // Handle unsuccessful response
-      SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.');
-      showSidebar()
-    }
-    // Handle error
+    await createReturnLabels(url, options, userData, labelDeliveryMethod);
   } catch (error) {
     SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.\n Error: \n' + error);
-}
+    showSidebar();
+  }
 };
+
+async function createReturnLabels(url, options, userData, labelDeliveryMethod) {
+  try {
+    if (labelDeliveryMethod === 'electronic') {
+      const response = await UrlFetchApp.fetch(url, options);
+      if (response.getResponseCode() === 200) {
+        var content = response.getContentText();
+        var data = JSON.parse(content);
+        var trackingId = data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"];
+        showDialog(userData[1], trackingId, labelDeliveryMethod);
+        showSidebar();
+      } else {
+        SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.');
+        showSidebar();
+      }
+    } else if (labelDeliveryMethod === 'print') {
+      const labelCount = 2;
+      var labels = getLabels(labelCount, url, options);
+
+      var htmlTemplate = HtmlService.createTemplateFromFile('ups-template');
+      htmlTemplate.labels = labels;
+
+      var htmlContent = htmlTemplate.evaluate().getContent()
+      var pdfBlob = Utilities.newBlob(htmlContent, 'text/html', 'return_label.html').getAs('application/pdf');
+
+      var folder = DriveApp.getFoldersByName('UPS Return Tool - Labels').next();
+      var file = folder.createFile(pdfBlob.setName(`${userData[0]}'s Return Label.pdf`));
+      var fileUrl = file.getUrl();
+
+      showDialog(userData[1], fileUrl, labelDeliveryMethod);
+      showSidebar();
+    }
+  } catch (error) {
+    SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.\n Error: \n' + error);
+    showSidebar();
+  }
+}
+
+
+function getLabels(labelCount, url, options) {
+  var labels = [];
+
+  for (var i = 0; i < labelCount; i++) {
+    var response = UrlFetchApp.fetch(url, options);
+    if (response.getResponseCode() === 200) {
+      var data = JSON.parse(response.getContentText());
+      var labelData = data["ShipmentResponse"]["ShipmentResults"]["PackageResults"][0]["ShippingLabel"]["GraphicImage"];
+      labels.push(`data:image/gif;base64,${labelData}`);  // Store base64 label image in the array
+    }
+  }
+
+  return labels;
+}
 
 function parseSheetForEmail(email) {
   var targetSheet = SpreadsheetApp.getActive().getSheetByName('rplSelect');;
