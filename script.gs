@@ -42,10 +42,8 @@ async function createUPSReturnLabel(form_data) {
   var documentProperties = PropertiesService.getDocumentProperties();
   var userEmail = form_data["user_email"]
   var equipmentType = form_data["equipment_type"]
-<<<<<<< HEAD
+
   var labelDeliveryMethod = form_data["delivery_method"]
-=======
->>>>>>> dd7fdcd7f1427bb03c01fa8b8953f7524c3d6fb0
   var userData = parseSheetForEmail(userEmail)
 
   let returnService;
@@ -199,11 +197,22 @@ async function createUPSReturnLabel(form_data) {
           // Process for physical return label creation
           var folder = DriveApp.getFoldersByName('UPS Return Tool - Labels').next();
           results = data["ShipmentResponse"]["ShipmentResults"]["PackageResults"][0]["ShippingLabel"]["GraphicImage"]
-          var decodedResults = Utilities.base64Decode(results)
-          var finalResults = Utilities.newBlob(decodedResults)
-          var file = folder.createFile(finalResults.setName(`${userData[0]}'s Return Label.pdf`));
+          const secondResponse = await UrlFetchApp.fetch(url, options);
+          if (secondResponse.getResponseCode() === 200) {
+              var secondContent = secondResponse.getContentText();
+              var secondData = JSON.parse(secondContent)
+              secondResults = secondData["ShipmentResponse"]["ShipmentResults"]["PackageResults"][0]["ShippingLabel"]["GraphicImage"]
+          }
+          var returnLabelOne = `data:image/gif;base64,${results}`;
+          var returnLabelTwo = `data:image/gif;base64,${secondResults}`;
+          var htmlTemplate = HtmlService.createHtmlOutputFromFile('ups-template').getContent();
+          htmlTemplate = htmlTemplate.replace('RETURN_LABEL_ONE', returnLabelOne);
+          htmlTemplate = htmlTemplate.replace('RETURN_LABEL_TWO', returnLabelTwo);
+          var pdfBlob = Utilities.newBlob(htmlTemplate, 'text/html', 'return_label.html');
+          var file = folder.createFile(pdfBlob.getAs('application/pdf').setName(`${userData[0]}'s Return Label.pdf`));
           var fileUrl = file.getUrl();
           showDialog(userData[1], fileUrl, labelDeliveryMethod)
+          showSidebar()
           }
         } else {
       // Handle unsuccessful response
