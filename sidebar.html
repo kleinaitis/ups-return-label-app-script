@@ -10,7 +10,6 @@
 
     <fieldset>
         <legend>Type of equipment?</legend>
-
         <div>
             <input type="radio" id="laptop" name="equipment_type" value="laptop" required/>
             <label for="laptop">Laptop (5 lbs)</label>
@@ -39,6 +38,11 @@
         <div>
             <input type="radio" id="print" name="delivery_method" value="print"/>
             <label for="print">Print</label>
+            <select name="number-of-labels" id="number-of-labels" required>
+                <option value=1>1</option>
+                <option value=2>2</option>
+                <option value=3>3</option>
+            </select>
         </div>
     </fieldset>
 
