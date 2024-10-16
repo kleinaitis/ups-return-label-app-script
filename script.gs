@@ -46,25 +46,8 @@ async function createUPSReturnLabel(form_data) {
   var labelDeliveryMethod = form_data["delivery_method"]
   var userData = parseSheetForEmail(userEmail)
 
-  let returnService;
-  let labelImageFormat;
-  let labelDelivery;
+  const { returnService, labelImageFormat, labelDelivery } = getLabelConfig(labelDeliveryMethod, userData);
 
-    if (labelDeliveryMethod === "electronic") {
-    returnService = '8'
-    labelImageFormat = 'EPL'
-    labelDelivery = {
-      EMail: {
-        EMailAddress: `${userData[1]}`
-        }
-      }
-    } else if (labelDeliveryMethod === 'print'){
-    returnService = '9'
-    labelImageFormat = 'GIF'
-    labelDelivery = {
-      LabelLinksIndicator: ''
-      }
-    }
 
   let ticketNumber;
     if (form_data["ticket_number"]) {
@@ -191,6 +174,23 @@ async function createUPSReturnLabel(form_data) {
   }
 };
 
+function getLabelConfig(labelDeliveryMethod, userData) {
+  if (labelDeliveryMethod === "electronic") {
+    return {
+      returnService: '8',
+      labelImageFormat: 'EPL',
+      labelDelivery: { EMail: { EMailAddress: userData[1] } },
+    };
+  } else if (labelDeliveryMethod === 'print') {
+    return {
+      returnService: '9',
+      labelImageFormat: 'GIF',
+      labelDelivery: { LabelLinksIndicator: '' },
+    };
+  }
+  return {};
+}
+
 async function createReturnLabels(url, options, userData, labelDeliveryMethod, numberofLabels) {
   try {
     if (labelDeliveryMethod === 'electronic') {
@@ -243,6 +243,7 @@ function getLabels(labelCount, url, options) {
 
   return labels;
 }
+
 
 function parseSheetForEmail(email) {
   var targetSheet = SpreadsheetApp.getActive().getSheetByName('rplSelect');;
