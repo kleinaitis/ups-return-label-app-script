@@ -40,21 +40,19 @@ async function generateUPSToken() {
 
 async function createUPSReturnLabel(form_data) {
   var documentProperties = PropertiesService.getDocumentProperties();
-  var userEmail = form_data["user_email"]
-  var equipmentType = form_data["equipment_type"]
-  var numberofLabels = form_data["number-of-labels"]
-  var labelDeliveryMethod = form_data["delivery_method"]
+
+  const {
+    user_email: userEmail,
+    equipment_type: equipmentType,
+    delivery_method: labelDeliveryMethod,
+    ticket_number: ticketNumber = 'n/a',  // Set default value during destructuring in case of falsy/null/undefined
+    number_of_labels: numberofLabels
+  } = form_data;
+
   var userData = parseSheetForEmail(userEmail)
 
   const { returnService, labelImageFormat, labelDelivery } = getLabelConfig(labelDeliveryMethod, userData);
 
-
-  let ticketNumber;
-    if (form_data["ticket_number"]) {
-      ticketNumber = form_data["ticket_number"]
-    } else {
-      ticketNumber = 'n/a'
-    }
   let postalCode = postalCodeValidation(userData[7])
   console.log(postalCode)
 
