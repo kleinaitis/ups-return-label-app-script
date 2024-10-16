@@ -358,22 +358,38 @@ function showDialog(usersName, identifier, labelDeliveryMethod) {
        // Message for electronic return label
        htmlContent = `
            <html>
-               <body>
-                   <p>Return shipping label was successfully created for ${usersName}.</p>
-                   <p>Tracking Number: <b>${identifier}<b></p>
-                   <button onclick="google.script.host.close()">Close</button>
-               </body>
+            <head>
+              <style>
+                body {
+                  overflow: hidden;
+                  margin: 0;
+                  padding: 0;
+                }
+              </style>
+            </head>
+            <body>
+              <p>Return shipping label was successfully created for ${usersName}.</p>
+              <p>Tracking Number: <b>${identifier}<b></p>
+            </body>
            </html>
        `;
    } else if (labelDeliveryMethod === 'print') {
        // Message for print return label
        htmlContent = `
            <html>
-               <body>
-                   <p>Return shipping label was successfully created for ${usersName}.</p>
-                   <p>Download your label(s): <a href="${identifier}" target="_blank">${identifier}</a></p>
-                   <button onclick="google.script.host.close()">Close</button>
-               </body>
+            <head>
+              <style>
+                body {
+                  overflow: hidden;
+                  margin: 0;
+                  padding: 0;
+                }
+              </style>
+            </head>
+            <body>
+                <p>Return shipping label was successfully created for ${usersName}.</p>
+                <p>Download your label(s): <a href="${identifier}" target="_blank">${identifier}</a></p>
+            </body>
            </html>
        `;
    }
