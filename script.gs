@@ -165,7 +165,7 @@ async function createUPSReturnLabel(form_data) {
   })
 }
   try {
-    await createReturnLabels(url, options, userData, labelDeliveryMethod, numberofLabels);
+    await createPDFReturnLabels(url, options, userData, labelDeliveryMethod, numberofLabels);
   } catch (error) {
     SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.\n Error: \n' + error);
     showSidebar();
@@ -189,7 +189,7 @@ function getLabelConfig(labelDeliveryMethod, userData) {
   return {};
 }
 
-async function createReturnLabels(url, options, userData, labelDeliveryMethod, numberofLabels) {
+async function createPDFReturnLabels(url, options, userData, labelDeliveryMethod, numberofLabels) {
   try {
     if (labelDeliveryMethod === 'electronic') {
       const response = await UrlFetchApp.fetch(url, options);
@@ -205,7 +205,7 @@ async function createReturnLabels(url, options, userData, labelDeliveryMethod, n
       }
     } else if (labelDeliveryMethod === 'print') {
       const labelCount = numberofLabels;
-      var labels = getLabels(labelCount, url, options);
+      var labels = extractLabelsFromRequest(labelCount, url, options);
 
       var htmlTemplate = HtmlService.createTemplateFromFile('ups-template');
       htmlTemplate.labels = labels;
@@ -227,7 +227,7 @@ async function createReturnLabels(url, options, userData, labelDeliveryMethod, n
 }
 
 
-function getLabels(labelCount, url, options) {
+function extractLabelsFromRequest(labelCount, url, options) {
   var labels = [];
 
   for (var i = 0; i < labelCount; i++) {
