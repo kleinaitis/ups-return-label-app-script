@@ -1,256 +1,277 @@
 <style>
-	.radio-inputs {
-		display: flex;
-		justify-content: flex-start;
-		align-items: center;
-		max-width: 300px;
-		-webkit-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-	}
+    .radio-inputs {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        max-width: 300px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
 
-	.radio-inputs > * {
-		margin: 4px;
-	}
+    .radio-inputs > * {
+        margin: 4px;
+    }
 
-	.radio-input:checked + .radio-tile {
-		border-color: #2260ff;
-		box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-		color: #2260ff;
-	}
+    .radio-input:checked + .radio-tile {
+        border-color: #2260ff;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        color: #2260ff;
+    }
 
-	.radio-input:checked + .radio-tile:before {
-		transform: scale(1);
-		opacity: 1;
-		background-color: #2260ff;
-		border-color: #2260ff;
-	}
+    .radio-input:checked + .radio-tile:before {
+        transform: scale(1);
+        opacity: 1;
+        background-color: #2260ff;
+        border-color: #2260ff;
+    }
 
-	.radio-input:checked + .radio-tile .radio-icon svg {
-		fill: #2260ff;
-	}
+    .radio-input:checked + .radio-tile .radio-icon svg {
+        fill: #2260ff;
+    }
 
-	.radio-input:checked + .radio-tile .radio-label {
-		color: #2260ff;
-	}
+    .radio-input:checked + .radio-tile .radio-label {
+        color: #2260ff;
+    }
 
-	.radio-input:focus + .radio-tile {
-		border-color: #2260ff;
-		box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1), 0 0 0 4px #b5c9fc;
-	}
+    .radio-input:focus + .radio-tile {
+        border-color: #2260ff;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1), 0 0 0 4px #b5c9fc;
+    }
 
-	.radio-input:focus + .radio-tile:before {
-		transform: scale(1);
-		opacity: 1;
-	}
+    .radio-input:focus + .radio-tile:before {
+        transform: scale(1);
+        opacity: 1;
+    }
 
-	.radio-tile {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		width: 75px;
-		height: 75px;
-		border-radius: 0.5rem;
-		border: 2px solid #b5bfd9;
-		background-color: #fff;
-		box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-		transition: 0.15s ease;
-		cursor: pointer;
-		position: relative;
-	}
+    .radio-tile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 75px;
+        height: 75px;
+        border-radius: 0.5rem;
+        border: 2px solid #b5bfd9;
+        background-color: #fff;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        transition: 0.15s ease;
+        cursor: pointer;
+        position: relative;
+    }
 
-	.radio-tile:before {
-		content: "";
-		position: absolute;
-		display: block;
-		width: 0.5rem;
-		height: 0.5rem;
-		border: 2px solid #b5bfd9;
-		background-color: #fff;
-		border-radius: 50%;
-		top: 0.25rem;
-		left: 0.25rem;
-		opacity: 0;
-		transform: scale(0);
-		transition: 0.25s ease;
-	}
+    .radio-tile:before {
+        content: "";
+        position: absolute;
+        display: block;
+        width: 0.5rem;
+        height: 0.5rem;
+        border: 2px solid #b5bfd9;
+        background-color: #fff;
+        border-radius: 50%;
+        top: 0.25rem;
+        left: 0.25rem;
+        opacity: 0;
+        transform: scale(0);
+        transition: 0.25s ease;
+    }
 
-	.radio-tile:hover {
-		border-color: #2260ff;
-	}
+    .radio-tile:hover {
+        border-color: #2260ff;
+    }
 
-	.radio-tile:hover:before {
-		transform: scale(1);
-		opacity: 1;
-	}
+    .radio-tile:hover:before {
+        transform: scale(1);
+        opacity: 1;
+    }
 
-	.radio-icon svg {
-		width: 2rem;
-		height: 2rem;
-		fill: #494949;
-	}
+    .radio-icon svg {
+        width: 2rem;
+        height: 2rem;
+        fill: #494949;
+    }
 
-	.radio-label {
-		color: #707070;
-		transition: 0.375s ease;
-		text-align: center;
-		font-size: 13px;
-	}
+    .radio-label {
+        color: #707070;
+        transition: 0.375s ease;
+        text-align: center;
+        font-size: 13px;
+    }
 
-	.radio-input {
-		clip: rect(0 0 0 0);
-		-webkit-clip-path: inset(100%);
-		clip-path: inset(100%);
-		height: 1px;
-		overflow: hidden;
-		position: absolute;
-		white-space: nowrap;
-		width: 1px;
-	}
+    .radio-input {
+        clip: rect(0 0 0 0);
+        -webkit-clip-path: inset(100%);
+        clip-path: inset(100%);
+        height: 1px;
+        overflow: hidden;
+        position: absolute;
+        white-space: nowrap;
+        width: 1px;
+    }
 
-	.print-container .radio-input:checked + .radio-tile {
-		width: 150px;
-		padding-left: 15px;
-	}
+    .print-container .radio-input:checked + .radio-tile {
+        width: 150px;
+        padding-left: 15px;
+    }
 
-	.print-container .label-section {
-		flex-direction: row;
-		align-items: center;
-		justify-content: center;
-		margin-left: 20px;
-	}
+    .print-container .label-section {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin-left: 20px;
+    }
 
-	.print-svg-label-container {
-		display: grid;
-		align-items: center;
-		justify-content: center;
-	}
+    .print-svg-label-container {
+        display: grid;
+        align-items: center;
+        justify-content: center;
+    }
 
-	.print-tile {
-		flex-direction: row;
+    .print-tile {
+        flex-direction: row;
 
-	}
+    }
 </style>
 
 <form id="form">
 
-	<legend>Enter the employee's email</legend>
-	<div>
-		<input type="email" id="user_email" name="user_email" required />
-	</div>
+    <legend>Enter the employee's email</legend>
+    <div>
+        <input type="email" id="user_email" name="user_email" required/>
+    </div>
 
-	<br>
+    <br>
 
-	<fieldset>
-		<legend>Weight of equipment?</legend>
-		<div class="radio-inputs">
-			<label>
-				<input class="radio-input" type="radio" name="equipment_type" value="laptop" required>
-				<span class="radio-tile">
+    <fieldset>
+        <legend>Weight of equipment?</legend>
+        <div class="radio-inputs">
+            <label>
+                <input class="radio-input" type="radio" name="equipment_type" value="laptop" required>
+                <span class="radio-tile">
                      <span class="radio-icon">
-                        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M30.5,14H1.5A1.5,1.5,0,0,0,0,15.5v10A1.5,1.5,0,0,0,1.5,27h29A1.5,1.5,0,0,0,32,25.5v-10A1.5,1.5,0,0,0,30.5,14ZM31,25.5a0.5,0.5,0,0,1-.5.5H1.5A0.5,0.5,0,0,1,1,25.5v-10A0.5,0.5,0,0,1,1.5,15h29a0.5,0.5,0,0,1,.5.5v10Z"/><polygon points="23 22 22 22 22 23 24 23 24 20 23 20 23 22"/><rect height="1" width="3" x="21" y="24"/><rect height="1" width="18" x="4" y="20"/><rect height="1" width="1" x="2" y="20"/><rect height="1" width="1" x="2" y="16"/><rect height="1" width="2" x="2" y="22"/><rect height="1" width="3" x="2" y="24"/><rect height="1" width="14" x="6" y="24"/><rect height="1" width="16" x="5" y="22"/><rect height="1" width="22" x="2" y="18"/><rect height="1" width="5" x="25" y="18"/><rect height="1" width="20" x="4" y="16"/><rect height="1" width="5" x="25" y="20"/><polygon points="28 23 27 23 27 24 26 24 26 25 29 25 29 24 28 24 28 23"/><path d="M13.5,12H18a3.5,3.5,0,0,0,0-7H13.5A3.5,3.5,0,0,0,13.5,12Zm7-3.5A2.5,2.5,0,0,1,18,11H16V6h2A2.5,2.5,0,0,1,20.5,8.5ZM13.5,6H15v5H13.5A2.5,2.5,0,0,1,13.5,6Z"/><rect height="1" width="2" x="12" y="8"/></svg>
+                        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path
+                                d="M30.5,14H1.5A1.5,1.5,0,0,0,0,15.5v10A1.5,1.5,0,0,0,1.5,27h29A1.5,1.5,0,0,0,32,25.5v-10A1.5,1.5,0,0,0,30.5,14ZM31,25.5a0.5,0.5,0,0,1-.5.5H1.5A0.5,0.5,0,0,1,1,25.5v-10A0.5,0.5,0,0,1,1.5,15h29a0.5,0.5,0,0,1,.5.5v10Z"/><polygon
+                                points="23 22 22 22 22 23 24 23 24 20 23 20 23 22"/><rect height="1" width="3" x="21"
+                                                                                          y="24"/><rect height="1"
+                                                                                                        width="18" x="4"
+                                                                                                        y="20"/><rect
+                                height="1" width="1" x="2" y="20"/><rect height="1" width="1" x="2" y="16"/><rect
+                                height="1" width="2" x="2" y="22"/><rect height="1" width="3" x="2" y="24"/><rect
+                                height="1" width="14" x="6" y="24"/><rect height="1" width="16" x="5" y="22"/><rect
+                                height="1" width="22" x="2" y="18"/><rect height="1" width="5" x="25" y="18"/><rect
+                                height="1" width="20" x="4" y="16"/><rect height="1" width="5" x="25" y="20"/><polygon
+                                points="28 23 27 23 27 24 26 24 26 25 29 25 29 24 28 24 28 23"/><path
+                                d="M13.5,12H18a3.5,3.5,0,0,0,0-7H13.5A3.5,3.5,0,0,0,13.5,12Zm7-3.5A2.5,2.5,0,0,1,18,11H16V6h2A2.5,2.5,0,0,1,20.5,8.5ZM13.5,6H15v5H13.5A2.5,2.5,0,0,1,13.5,6Z"/><rect
+                                height="1" width="2" x="12" y="8"/></svg>
                     </span>
                     <span class="radio-label">3 lbs</span>
                 </span>
-			</label>
-			<label>
-				<input class="radio-input" type="radio" name="equipment_type" value="ipad">
-				<span class="radio-tile">
+            </label>
+            <label>
+                <input class="radio-input" type="radio" name="equipment_type" value="ipad">
+                <span class="radio-tile">
                       <span class="radio-icon">
-                        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M29,24V6.44A1.46,1.46,0,0,0,27.5,5H4.5A1.46,1.46,0,0,0,3,6.44V24H0v0.44A2.55,2.55,0,0,0,2.5,27h27A2.55,2.55,0,0,0,32,24.44V24H29ZM4,6.44A0.46,0.46,0,0,1,4.5,6h23a0.46,0.46,0,0,1,.5.44V24H4V6.44ZM2.5,26a1.63,1.63,0,0,1-1.41-1H14v1H2.5Zm27,0H18V25H30.91A1.63,1.63,0,0,1,29.5,26Z"/><path d="M5,23H27V7H5V23ZM6,8H26V22H6V8Z"/></svg>
+                        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path
+                                d="M29,24V6.44A1.46,1.46,0,0,0,27.5,5H4.5A1.46,1.46,0,0,0,3,6.44V24H0v0.44A2.55,2.55,0,0,0,2.5,27h27A2.55,2.55,0,0,0,32,24.44V24H29ZM4,6.44A0.46,0.46,0,0,1,4.5,6h23a0.46,0.46,0,0,1,.5.44V24H4V6.44ZM2.5,26a1.63,1.63,0,0,1-1.41-1H14v1H2.5Zm27,0H18V25H30.91A1.63,1.63,0,0,1,29.5,26Z"/><path
+                                d="M5,23H27V7H5V23ZM6,8H26V22H6V8Z"/></svg>
                     </span>
                     <span class="radio-label">5 lbs</span>
                 </span>
-			</label>
-			<label>
-				<input class="radio-input" type="radio" name="equipment_type" value="termination" />
-				<span class="radio-tile">
+            </label>
+            <label>
+                <input class="radio-input" type="radio" name="equipment_type" value="termination"/>
+                <span class="radio-tile">
                     <span class="radio-icon">
-                      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M32,22V3H7V5H0V26H12V22h6v3H14v1H25V25H21V22H32ZM7,18H3V16H7v2Zm0-5H1V10H7v3ZM7,6V9H1V6H7Zm4,19H1V14H7v1H2v4H7v3h4v3ZM8,21V4H31V21H8Zm12,4H19V22h1v3Z"/><circle cx="3" cy="22" r="1"/><path d="M30,5H9V20H30V5ZM29,19H10V6H29V19Z"/></svg>
+                      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path
+                              d="M32,22V3H7V5H0V26H12V22h6v3H14v1H25V25H21V22H32ZM7,18H3V16H7v2Zm0-5H1V10H7v3ZM7,6V9H1V6H7Zm4,19H1V14H7v1H2v4H7v3h4v3ZM8,21V4H31V21H8Zm12,4H19V22h1v3Z"/><circle
+                              cx="3" cy="22" r="1"/><path d="M30,5H9V20H30V5ZM29,19H10V6H29V19Z"/></svg>
                   </span>
                     <span class="radio-label">10 lbs</span>
                 </span>
-			</label>
-		</div>
-	</fieldset>
+            </label>
+        </div>
+    </fieldset>
 
-	<br>
+    <br>
 
-	<fieldset>
-		<legend>Label Delivery Method</legend>
-		<div class="radio-inputs">
-			<label>
-				<input class="radio-input" type="radio" id="electronic" name="delivery_method" value="electronic" required />
-				<span class="radio-tile">
+    <fieldset>
+        <legend>Label Delivery Method</legend>
+        <div class="radio-inputs">
+            <label>
+                <input class="radio-input" type="radio" id="electronic" name="delivery_method" value="electronic"
+                       required/>
+                <span class="radio-tile">
                      <span class="radio-icon">
-                        <?xml version="1.0" ?><svg enable-background="new 0 0 48 48" height="48px" version="1.1" viewBox="0 0 48 48" width="48px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Expanded"><g><g><path d="M44,40H4c-2.206,0-4-1.794-4-4V12c0-2.206,1.794-4,4-4h40c2.206,0,4,1.794,4,4v24C48,38.206,46.206,40,44,40z M4,10     c-1.103,0-2,0.897-2,2v24c0,1.103,0.897,2,2,2h40c1.103,0,2-0.897,2-2V12c0-1.103-0.897-2-2-2H4z"/></g><g><path d="M24,29.191L6.457,17.84c-0.464-0.301-0.597-0.919-0.297-1.383s0.919-0.596,1.383-0.297L24,26.809L40.457,16.16     c0.464-0.299,1.083-0.167,1.383,0.297s0.167,1.082-0.297,1.383L24,29.191z"/></g><g><path d="M6.001,34c-0.323,0-0.641-0.156-0.833-0.445c-0.307-0.46-0.183-1.08,0.277-1.387l9-6c0.46-0.307,1.081-0.183,1.387,0.277     c0.307,0.46,0.183,1.08-0.277,1.387l-9,6C6.384,33.945,6.191,34,6.001,34z"/></g><g><path d="M41.999,34c-0.19,0-0.383-0.055-0.554-0.168l-9-6c-0.46-0.307-0.584-0.927-0.277-1.387     c0.306-0.46,0.926-0.584,1.387-0.277l9,6c0.46,0.307,0.584,0.927,0.277,1.387C42.64,33.844,42.322,34,41.999,34z"/></g></g></g></svg>
+                        <?xml version="1.0" ?>
+                         <svg enable-background="new 0 0 48 48" height="48px" version="1.1" viewBox="0 0 48 48"
+                              width="48px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+                              xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Expanded"><g><g><path d="M44,40H4c-2.206,0-4-1.794-4-4V12c0-2.206,1.794-4,4-4h40c2.206,0,4,1.794,4,4v24C48,38.206,46.206,40,44,40z M4,10     c-1.103,0-2,0.897-2,2v24c0,1.103,0.897,2,2,2h40c1.103,0,2-0.897,2-2V12c0-1.103-0.897-2-2-2H4z"/></g><g><path d="M24,29.191L6.457,17.84c-0.464-0.301-0.597-0.919-0.297-1.383s0.919-0.596,1.383-0.297L24,26.809L40.457,16.16     c0.464-0.299,1.083-0.167,1.383,0.297s0.167,1.082-0.297,1.383L24,29.191z"/></g><g><path d="M6.001,34c-0.323,0-0.641-0.156-0.833-0.445c-0.307-0.46-0.183-1.08,0.277-1.387l9-6c0.46-0.307,1.081-0.183,1.387,0.277     c0.307,0.46,0.183,1.08-0.277,1.387l-9,6C6.384,33.945,6.191,34,6.001,34z"/></g><g><path d="M41.999,34c-0.19,0-0.383-0.055-0.554-0.168l-9-6c-0.46-0.307-0.584-0.927-0.277-1.387     c0.306-0.46,0.926-0.584,1.387-0.277l9,6c0.46,0.307,0.584,0.927,0.277,1.387C42.64,33.844,42.322,34,41.999,34z"/></g></g></g></svg>
                     </span>
                     <span class="radio-label">Electronic</span>
                 </span>
-			</label>
-			<label>
-				<div class="print-container">
-					<input class="radio-input" type="radio" id="print" name="delivery_method" value="print" />
-					<div class="radio-tile print-tile">
-						<div class="print-svg-label-container">
+            </label>
+            <label>
+                <div class="print-container">
+                    <input class="radio-input" type="radio" id="print" name="delivery_method" value="print"/>
+                    <div class="radio-tile print-tile">
+                        <div class="print-svg-label-container">
             <span class="radio-icon">
                 <svg data-name="Livello 1" id="Livello_1" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
-                    <title />
-                    <path d="M61.88,93.12h0a3,3,0,0,0,.44.36l.24.13a1.74,1.74,0,0,0,.59.24l.25.07h0a3,3,0,0,0,1.16,0l.26-.08.3-.09a3,3,0,0,0,.3-.16l.21-.12a3,3,0,0,0,.46-.38L93,66.21A3,3,0,1,0,88.79,62L67,83.76V3a3,3,0,0,0-6,0V83.76L39.21,62A3,3,0,0,0,35,66.21Z" />
-                    <path d="M125,88a3,3,0,0,0-3,3v22a9,9,0,0,1-9,9H15a9,9,0,0,1-9-9V91a3,3,0,0,0-6,0v22a15,15,0,0,0,15,15h98a15,15,0,0,0,15-15V91A3,3,0,0,0,125,88Z" />
+                    <title/>
+                    <path d="M61.88,93.12h0a3,3,0,0,0,.44.36l.24.13a1.74,1.74,0,0,0,.59.24l.25.07h0a3,3,0,0,0,1.16,0l.26-.08.3-.09a3,3,0,0,0,.3-.16l.21-.12a3,3,0,0,0,.46-.38L93,66.21A3,3,0,1,0,88.79,62L67,83.76V3a3,3,0,0,0-6,0V83.76L39.21,62A3,3,0,0,0,35,66.21Z"/>
+                    <path d="M125,88a3,3,0,0,0-3,3v22a9,9,0,0,1-9,9H15a9,9,0,0,1-9-9V91a3,3,0,0,0-6,0v22a15,15,0,0,0,15,15h98a15,15,0,0,0,15-15V91A3,3,0,0,0,125,88Z"/>
                 </svg>
             </span>
-							<span class="radio-label">Print</span>
-						</div>
-						<div class="label-section">
-							<label for="number_of_labels">Number of labels:</label>
-							<select name="number_of_labels" id="number_of_labels" required>
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-							</select>
-						</div>
-					</div>
-				</div>
-			</label>
+                            <span class="radio-label">Print</span>
+                        </div>
+                        <div class="label-section">
+                            <label for="number_of_labels">Number of labels:</label>
+                            <select name="number_of_labels" id="number_of_labels" required>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </label>
 
 
+        </div>
+    </fieldset>
 
-		</div>
-	</fieldset>
+    <br>
 
-	<br>
+    <fieldset>
+        <legend>Reference Number</legend>
+        <div>
+            <input type="text" id="ticket_number" name="ticket_number"/>
+        </div>
+    </fieldset>
 
-	<fieldset>
-		<legend>Reference Number</legend>
-		<div>
-			<input type="text" id="ticket_number" name="ticket_number" />
-		</div>
-	</fieldset>
+    <br>
 
-	<br>
+    <input type="submit" value="Create Return Label" onclick="google.script.run.generateReturnLabel(this.parentNode)"/>
 
-	<input type="submit" value="Create Return Label" onclick="google.script.run.generateReturnLabel(this.parentNode)" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const printRadio = document.getElementById('print');
+            const electronicRadio = document.getElementById('electronic');
+            const labelSection = document.querySelector('.print-container .label-section');
 
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			const printRadio = document.getElementById('print');
-			const electronicRadio = document.getElementById('electronic');
-			const labelSection = document.querySelector('.print-container .label-section');
+            function toggleLabelSection() {
+                if (printRadio.checked) {
+                    labelSection.style.display = 'flex'; // Show number of labels dropdown
+                } else {
+                    labelSection.style.display = 'none'; // Hide number of labels dropdown
+                }
+            }
 
-			function toggleLabelSection() {
-				if (printRadio.checked) {
-					labelSection.style.display = 'flex'; // Show number of labels dropdown
-				} else {
-					labelSection.style.display = 'none'; // Hide number of labels dropdown
-				}
-			}
-			printRadio.addEventListener('change', toggleLabelSection);
-			electronicRadio.addEventListener('change', toggleLabelSection);
+            printRadio.addEventListener('change', toggleLabelSection);
+            electronicRadio.addEventListener('change', toggleLabelSection);
 
-			toggleLabelSection();
-		});
-	</script>
+            toggleLabelSection();
+        });
+    </script>
 </form>
