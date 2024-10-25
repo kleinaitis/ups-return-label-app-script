@@ -1,286 +1,283 @@
 <style>
 
-    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+	@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-    body {
-        background-color: #f2f2f2;
-        margin-top: 5%;
-        font-family: Inter, sans-serif;
-    }
+	body {
+		background-color: #f2f2f2;
+		font-family: Inter, sans-serif;
+	}
 
-    .user-email label, .ticket-number label {
-        display: block;
-        text-align: center;
-    }
 
-    .user-email, .ticket-number {
-        height: 48px;
-    }
+	.user-email label, .ticket-number label {
+		display: block;
+		text-align: center;
+	}
 
-    input[type="text"], input[type="email"], input[type="submit"] {
-        border-radius: 0.5rem;
-        border: 1px solid lightgrey;
-        height: 25px;
-        width: 272px;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-    }
+	input[type="text"], input[type="email"], input[type="submit"] {
+		border-radius: 0.5rem;
+		border: 1px solid lightgrey;
+		height: 29.5px;
+		width: 272px;
+		box-sizing: border-box;
+		box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+	}
 
-    fieldset {
-        display: inline;
-        text-align: center;
-        border: 1px solid lightgray;
-        border-radius: 0.5rem;
-        padding: 5px;
-        margin: 0 auto;
-    }
+	fieldset {
+		display: inline;
+		text-align: center;
+		border: 1px solid lightgray;
+		border-radius: 0.5rem;
+		padding: 5px;
+		margin: 0 auto;
+	}
 
-    .form-container {
-        padding: 20px 5px;
-        border: 1px solid lightgrey;
-        border-radius: 0.5rem;
-        background-color: white;
-        text-align: center;
-    }
+	.form-container {
+		padding: 20px 5px;
+		border: 1px solid lightgrey;
+		border-radius: 0.5rem;
+		background-color: white;
+		text-align: center;
+	}
 
-    select {
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        border-radius: 0.5rem;
-        border: 1px solid lightgray;
-        text-align: center;
-        font-size: 10px;
-    }
+	select {
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		border-radius: 0.5rem;
+		border: 1px solid lightgray;
+		text-align: center;
+		font-size: 10px;
+	}
 
-    .radio-inputs {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        max-width: 300px;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
+	.radio-inputs {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		max-width: 300px;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	}
 
-    .radio-inputs > * {
-        margin: 4px;
-    }
+	.radio-inputs > * {
+		margin: 4px;
+	}
 
-    .radio-input:checked + .radio-tile {
-        border-color: #2260ff;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-        color: #2260ff;
-    }
+	.radio-input:checked + .radio-tile {
+		border-color: #2260ff;
+		box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+		color: #2260ff;
+	}
 
-    .radio-input:checked + .radio-tile:before {
-        transform: scale(1);
-        opacity: 1;
-        background-color: #2260ff;
-        border-color: #2260ff;
-    }
+	.radio-input:checked + .radio-tile:before {
+		transform: scale(1);
+		opacity: 1;
+		background-color: #2260ff;
+		border-color: #2260ff;
+	}
 
-    .radio-input:checked + .radio-tile .radio-icon svg {
-        fill: #2260ff;
-    }
+	.radio-input:checked + .radio-tile .radio-icon svg {
+		fill: #2260ff;
+	}
 
-    .radio-input:checked + .radio-tile .radio-label {
-        color: #2260ff;
-    }
+	.radio-input:checked + .radio-tile .radio-label {
+		color: #2260ff;
+	}
 
-    .radio-input:focus + .radio-tile {
-        border-color: #2260ff;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1), 0 0 0 4px #b5c9fc;
-    }
+	.radio-input:focus + .radio-tile {
+		border-color: #2260ff;
+		box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1), 0 0 0 4px #b5c9fc;
+	}
 
-    .radio-input:focus + .radio-tile:before {
-        transform: scale(1);
-        opacity: 1;
-    }
+	.radio-input:focus + .radio-tile:before {
+		transform: scale(1);
+		opacity: 1;
+	}
 
-    .radio-tile {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 75px;
-        height: 75px;
-        border-radius: 0.5rem;
-        border: 2px solid #b5bfd9;
-        background-color: #fff;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-        transition: 0.15s ease;
-        cursor: pointer;
-        position: relative;
-    }
+	.radio-tile {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 75px;
+		height: 75px;
+		border-radius: 0.5rem;
+		border: 2px solid #b5bfd9;
+		background-color: #fff;
+		box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+		transition: 0.15s ease;
+		cursor: pointer;
+		position: relative;
+	}
 
-    .radio-tile:before {
-        content: "";
-        position: absolute;
-        display: block;
-        width: 0.5rem;
-        height: 0.5rem;
-        border: 2px solid #b5bfd9;
-        background-color: #fff;
-        border-radius: 50%;
-        top: 0.25rem;
-        left: 0.25rem;
-        opacity: 0;
-        transform: scale(0);
-        transition: 0.25s ease;
-    }
+	.radio-tile:before {
+		content: "";
+		position: absolute;
+		display: block;
+		width: 0.5rem;
+		height: 0.5rem;
+		border: 2px solid #b5bfd9;
+		background-color: #fff;
+		border-radius: 50%;
+		top: 0.25rem;
+		left: 0.25rem;
+		opacity: 0;
+		transform: scale(0);
+		transition: 0.25s ease;
+	}
 
-    .radio-tile:hover {
-        border-color: #2260ff;
-    }
+	.radio-tile:hover {
+		border-color: #2260ff;
+	}
 
-    .radio-tile:hover:before {
-        transform: scale(1);
-        opacity: 1;
-    }
+	.radio-tile:hover:before {
+		transform: scale(1);
+		opacity: 1;
+	}
 
-    .radio-icon svg {
-        width: 2rem;
-        height: 2rem;
-        fill: #494949;
-    }
+	.radio-icon svg {
+		width: 2rem;
+		height: 2rem;
+		fill: #494949;
+	}
 
-    .radio-label {
-        color: #707070;
-        transition: 0.375s ease;
-        text-align: center;
-        font-size: 13px;
-    }
+	.radio-label {
+		color: #707070;
+		transition: 0.375s ease;
+		text-align: center;
+		font-size: 13px;
+	}
 
-    .radio-input {
-        clip: rect(0 0 0 0);
-        -webkit-clip-path: inset(100%);
-        clip-path: inset(100%);
-        height: 1px;
-        overflow: hidden;
-        position: absolute;
-        white-space: nowrap;
-        width: 1px;
-    }
+	.radio-input {
+		clip: rect(0 0 0 0);
+		-webkit-clip-path: inset(100%);
+		clip-path: inset(100%);
+		height: 1px;
+		overflow: hidden;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+	}
 
-    .print-container .radio-input:checked + .radio-tile {
-        width: 150px;
-        padding-left: 15px;
-    }
+	.print-container .radio-input:checked + .radio-tile {
+		width: 150px;
+		padding-left: 15px;
+	}
 
-    .print-container .label-section {
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-left: 20px;
-        font-size: 13px;
-    }
+	.print-container .label-section {
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		margin-left: 20px;
+		font-size: 13px;
+	}
 
-    .print-svg-label-container {
-        display: grid;
-        align-items: center;
-        justify-content: center;
-    }
+	.print-svg-label-container {
+		display: grid;
+		align-items: center;
+		justify-content: center;
+	}
 
-    .print-tile {
-        flex-direction: row;
+	.print-tile {
+		flex-direction: row;
+	}
 
-    }
 </style>
 
 <body>
 <form class="form-container" id="form-container">
 
-    <div class="user-email">
-        <label for="user_email">User's Email:</label>
-        <input type="email" id="user_email" name="user_email" required/>
-    </div>
+	<div class="user-email">
+		<label for="user_email">User's Email:</label>
+		<input type="email" id="user_email" name="user_email" required/>
+	</div>
 
-    <br>
+	<br>
 
-    <div class="ticket-number">
-        <label for="ticket_number">Reference Number:</label><input type="text" id="ticket_number" name="ticket_number"/>
-    </div>
+	<div class="ticket-number">
+		<label for="ticket_number">Reference Number:</label><input type="text" id="ticket_number" name="ticket_number"/>
+	</div>
 
-    <br>
+	<br>
 
-    <div class="fieldset-container-weight">
-        <fieldset>
-            <legend>Equipment Weight</legend>
-            <div class="radio-inputs">
-                <label>
-                    <input class="radio-input" type="radio" name="equipment_type" value="laptop" required>
-                    <span class="radio-tile">
+	<div class="fieldset-container-weight">
+		<fieldset>
+			<legend>Equipment Weight</legend>
+			<div class="radio-inputs">
+				<label>
+					<input class="radio-input" type="radio" name="equipment_type" value="laptop" required>
+					<span class="radio-tile">
                      <span class="radio-icon">
                         <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path
-                                d="M30.5,14H1.5A1.5,1.5,0,0,0,0,15.5v10A1.5,1.5,0,0,0,1.5,27h29A1.5,1.5,0,0,0,32,25.5v-10A1.5,1.5,0,0,0,30.5,14ZM31,25.5a0.5,0.5,0,0,1-.5.5H1.5A0.5,0.5,0,0,1,1,25.5v-10A0.5,0.5,0,0,1,1.5,15h29a0.5,0.5,0,0,1,.5.5v10Z"/><polygon
-                                points="23 22 22 22 22 23 24 23 24 20 23 20 23 22"/><rect height="1" width="3" x="21"
-                                                                                          y="24"/><rect height="1"
-                                                                                                        width="18" x="4"
-                                                                                                        y="20"/><rect
-                                height="1" width="1" x="2" y="20"/><rect height="1" width="1" x="2" y="16"/><rect
-                                height="1" width="2" x="2" y="22"/><rect height="1" width="3" x="2" y="24"/><rect
-                                height="1" width="14" x="6" y="24"/><rect height="1" width="16" x="5" y="22"/><rect
-                                height="1" width="22" x="2" y="18"/><rect height="1" width="5" x="25" y="18"/><rect
-                                height="1" width="20" x="4" y="16"/><rect height="1" width="5" x="25" y="20"/><polygon
-                                points="28 23 27 23 27 24 26 24 26 25 29 25 29 24 28 24 28 23"/><path
-                                d="M13.5,12H18a3.5,3.5,0,0,0,0-7H13.5A3.5,3.5,0,0,0,13.5,12Zm7-3.5A2.5,2.5,0,0,1,18,11H16V6h2A2.5,2.5,0,0,1,20.5,8.5ZM13.5,6H15v5H13.5A2.5,2.5,0,0,1,13.5,6Z"/><rect
-                                height="1" width="2" x="12" y="8"/></svg>
+								d="M30.5,14H1.5A1.5,1.5,0,0,0,0,15.5v10A1.5,1.5,0,0,0,1.5,27h29A1.5,1.5,0,0,0,32,25.5v-10A1.5,1.5,0,0,0,30.5,14ZM31,25.5a0.5,0.5,0,0,1-.5.5H1.5A0.5,0.5,0,0,1,1,25.5v-10A0.5,0.5,0,0,1,1.5,15h29a0.5,0.5,0,0,1,.5.5v10Z"/><polygon
+								points="23 22 22 22 22 23 24 23 24 20 23 20 23 22"/><rect height="1" width="3" x="21"
+																						  y="24"/><rect height="1"
+																										width="18" x="4"
+																										y="20"/><rect
+								height="1" width="1" x="2" y="20"/><rect height="1" width="1" x="2" y="16"/><rect
+								height="1" width="2" x="2" y="22"/><rect height="1" width="3" x="2" y="24"/><rect
+								height="1" width="14" x="6" y="24"/><rect height="1" width="16" x="5" y="22"/><rect
+								height="1" width="22" x="2" y="18"/><rect height="1" width="5" x="25" y="18"/><rect
+								height="1" width="20" x="4" y="16"/><rect height="1" width="5" x="25" y="20"/><polygon
+								points="28 23 27 23 27 24 26 24 26 25 29 25 29 24 28 24 28 23"/><path
+								d="M13.5,12H18a3.5,3.5,0,0,0,0-7H13.5A3.5,3.5,0,0,0,13.5,12Zm7-3.5A2.5,2.5,0,0,1,18,11H16V6h2A2.5,2.5,0,0,1,20.5,8.5ZM13.5,6H15v5H13.5A2.5,2.5,0,0,1,13.5,6Z"/><rect
+								height="1" width="2" x="12" y="8"/></svg>
                     </span>
                     <span class="radio-label">3 lbs</span>
                 </span>
-                </label>
-                <label>
-                    <input class="radio-input" type="radio" name="equipment_type" value="ipad">
-                    <span class="radio-tile">
+				</label>
+				<label>
+					<input class="radio-input" type="radio" name="equipment_type" value="ipad">
+					<span class="radio-tile">
                       <span class="radio-icon">
                         <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path
-                                d="M29,24V6.44A1.46,1.46,0,0,0,27.5,5H4.5A1.46,1.46,0,0,0,3,6.44V24H0v0.44A2.55,2.55,0,0,0,2.5,27h27A2.55,2.55,0,0,0,32,24.44V24H29ZM4,6.44A0.46,0.46,0,0,1,4.5,6h23a0.46,0.46,0,0,1,.5.44V24H4V6.44ZM2.5,26a1.63,1.63,0,0,1-1.41-1H14v1H2.5Zm27,0H18V25H30.91A1.63,1.63,0,0,1,29.5,26Z"/><path
-                                d="M5,23H27V7H5V23ZM6,8H26V22H6V8Z"/></svg>
+								d="M29,24V6.44A1.46,1.46,0,0,0,27.5,5H4.5A1.46,1.46,0,0,0,3,6.44V24H0v0.44A2.55,2.55,0,0,0,2.5,27h27A2.55,2.55,0,0,0,32,24.44V24H29ZM4,6.44A0.46,0.46,0,0,1,4.5,6h23a0.46,0.46,0,0,1,.5.44V24H4V6.44ZM2.5,26a1.63,1.63,0,0,1-1.41-1H14v1H2.5Zm27,0H18V25H30.91A1.63,1.63,0,0,1,29.5,26Z"/><path
+								d="M5,23H27V7H5V23ZM6,8H26V22H6V8Z"/></svg>
                     </span>
                     <span class="radio-label">5 lbs</span>
                 </span>
-                </label>
-                <label>
-                    <input class="radio-input" type="radio" name="equipment_type" value="termination"/>
-                    <span class="radio-tile">
+				</label>
+				<label>
+					<input class="radio-input" type="radio" name="equipment_type" value="termination"/>
+					<span class="radio-tile">
                     <span class="radio-icon">
                       <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path
-                              d="M32,22V3H7V5H0V26H12V22h6v3H14v1H25V25H21V22H32ZM7,18H3V16H7v2Zm0-5H1V10H7v3ZM7,6V9H1V6H7Zm4,19H1V14H7v1H2v4H7v3h4v3ZM8,21V4H31V21H8Zm12,4H19V22h1v3Z"/><circle
-                              cx="3" cy="22" r="1"/><path d="M30,5H9V20H30V5ZM29,19H10V6H29V19Z"/></svg>
+							  d="M32,22V3H7V5H0V26H12V22h6v3H14v1H25V25H21V22H32ZM7,18H3V16H7v2Zm0-5H1V10H7v3ZM7,6V9H1V6H7Zm4,19H1V14H7v1H2v4H7v3h4v3ZM8,21V4H31V21H8Zm12,4H19V22h1v3Z"/><circle
+							  cx="3" cy="22" r="1"/><path d="M30,5H9V20H30V5ZM29,19H10V6H29V19Z"/></svg>
                   </span>
                     <span class="radio-label">10 lbs</span>
                 </span>
-                </label>
-            </div>
-        </fieldset>
-    </div>
+				</label>
+			</div>
+		</fieldset>
+	</div>
 
-    <br>
+	<br>
 
-    <div class="fieldset-container-method">
-        <fieldset>
-            <legend>Label Delivery Method</legend>
-            <div class="radio-inputs">
-                <label>
-                    <input class="radio-input" type="radio" id="electronic" name="delivery_method" value="electronic"
-                           required/>
-                    <span class="radio-tile">
+	<div class="fieldset-container-method">
+		<fieldset>
+			<legend>Label Delivery Method</legend>
+			<div class="radio-inputs">
+				<label>
+					<input class="radio-input" type="radio" id="electronic" name="delivery_method" value="electronic"
+						   required/>
+					<span class="radio-tile">
                      <span class="radio-icon">
                         <?xml version="1.0" ?>
-                         <?xml version="1.0" encoding="utf-8"?>
-                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 122.88 71.9"
-                              xml:space="preserve"><g><path d="M29.56,0h88.02c1.57,0,2.95,0.64,3.9,1.67c0.96,1.03,1.5,2.46,1.38,4.03l-4.42,60.49c-0.09,1.18-0.53,2.28-1.22,3.2 c-0.14,0.3-0.33,0.57-0.59,0.8c-0.17,0.15-0.36,0.28-0.56,0.37c-1.05,0.83-2.36,1.33-3.74,1.33l-88.02,0 c-1.57,0-2.95-0.64-3.91-1.67c-0.96-1.03-1.49-2.46-1.38-4.03l1.25-10.18h4.37l-1.08,7.78l0,0l33.11-30.93L27.67,7.72l-0.29,3.93 H23l0.43-5.95c0.11-1.57,0.86-3,1.97-4.03C26.51,0.64,27.99,0,29.56,0L29.56,0L29.56,0z M2.19,49.78C0.98,49.78,0,48.8,0,47.59 c0-1.21,0.98-2.19,2.19-2.19h28.89c1.21,0,2.19,0.98,2.19,2.19c0,1.21-0.98,2.19-2.19,2.19H2.19L2.19,49.78z M13.02,36.22 c-1.21,0-2.19-0.98-2.19-2.19c0-1.21,0.98-2.19,2.19-2.19h25.06c1.21,0,2.19,0.98,2.19,2.19c0,1.21-0.98,2.19-2.19,2.19H13.02 L13.02,36.22z M2.19,22.66C0.98,22.66,0,21.68,0,20.47c0-1.21,0.98-2.19,2.19-2.19h28.89c1.21,0,2.19,0.98,2.19,2.19 c0,1.21-0.98,2.19-2.19,2.19H2.19L2.19,22.66z M59.87,35.64L25.74,67.52h85.53L83.2,35.64l-10.64,8.54l0,0 c-0.83,0.67-2.01,0.71-2.8,0.03L59.87,35.64L59.87,35.64L59.87,35.64z M86.74,32.81l27.5,31.23l4.13-56.6L86.74,32.81L86.74,32.81 L86.74,32.81z M30.71,4.37l40.73,35.31l44.03-35.31H30.71L30.71,4.37L30.71,4.37z"/></g></svg>                    <span
-                             class="radio-label">Electronic</span>
+						 <?xml version="1.0" encoding="utf-8"?>
+						 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 122.88 71.9"
+							  xml:space="preserve"><g><path d="M29.56,0h88.02c1.57,0,2.95,0.64,3.9,1.67c0.96,1.03,1.5,2.46,1.38,4.03l-4.42,60.49c-0.09,1.18-0.53,2.28-1.22,3.2 c-0.14,0.3-0.33,0.57-0.59,0.8c-0.17,0.15-0.36,0.28-0.56,0.37c-1.05,0.83-2.36,1.33-3.74,1.33l-88.02,0 c-1.57,0-2.95-0.64-3.91-1.67c-0.96-1.03-1.49-2.46-1.38-4.03l1.25-10.18h4.37l-1.08,7.78l0,0l33.11-30.93L27.67,7.72l-0.29,3.93 H23l0.43-5.95c0.11-1.57,0.86-3,1.97-4.03C26.51,0.64,27.99,0,29.56,0L29.56,0L29.56,0z M2.19,49.78C0.98,49.78,0,48.8,0,47.59 c0-1.21,0.98-2.19,2.19-2.19h28.89c1.21,0,2.19,0.98,2.19,2.19c0,1.21-0.98,2.19-2.19,2.19H2.19L2.19,49.78z M13.02,36.22 c-1.21,0-2.19-0.98-2.19-2.19c0-1.21,0.98-2.19,2.19-2.19h25.06c1.21,0,2.19,0.98,2.19,2.19c0,1.21-0.98,2.19-2.19,2.19H13.02 L13.02,36.22z M2.19,22.66C0.98,22.66,0,21.68,0,20.47c0-1.21,0.98-2.19,2.19-2.19h28.89c1.21,0,2.19,0.98,2.19,2.19 c0,1.21-0.98,2.19-2.19,2.19H2.19L2.19,22.66z M59.87,35.64L25.74,67.52h85.53L83.2,35.64l-10.64,8.54l0,0 c-0.83,0.67-2.01,0.71-2.8,0.03L59.87,35.64L59.87,35.64L59.87,35.64z M86.74,32.81l27.5,31.23l4.13-56.6L86.74,32.81L86.74,32.81 L86.74,32.81z M30.71,4.37l40.73,35.31l44.03-35.31H30.71L30.71,4.37L30.71,4.37z"/></g></svg>                    <span
+							 class="radio-label">Electronic</span>
                 </span>
                     </span>
-                </label>
-                <label>
+				</label>
+				<label>
 				<span class="print-container">
 					<input class="radio-input" type="radio" id="print" name="delivery_method" value="print"/>
 					<span class="radio-tile print-tile">
 						<span class="print-svg-label-container">
             <span class="radio-icon">
                 <svg height="512" width="512" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
-                     viewBox="0 0 50 50" xml:space="preserve">
+					 viewBox="0 0 50 50" xml:space="preserve">
                 <path fill="#231F20" d="M11,32.996c-0.553,0-1,0.448-1,1v6.133c0,0.552,0.447,1,1,1h28c0.553,0,1-0.448,1-1v-6.133
                     c0-0.552-0.447-1-1-1s-1,0.448-1,1v5.133H12v-5.133C12,33.444,11.553,32.996,11,32.996z"></path>
                 <path fill="#231F20" d="M25,9.129c-0.553,0-1,0.448-1,1v21.51l-6.343-6.127c-0.395-0.384-1.03-0.373-1.413,0.024
@@ -302,34 +299,34 @@
 						</span>
 					</span>
 				</span>
-                </label>
-            </div>
-        </fieldset>
-    </div>
+				</label>
+			</div>
+		</fieldset>
+	</div>
 
-    <br>
+	<br>
 
-    <input type="submit" value="Create Return Label" onclick="google.script.run.generateReturnLabel(this.parentNode)"/>
+	<input type="submit" value="Create Return Label" onclick="google.script.run.generateReturnLabel(this.parentNode)"/>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const printRadio = document.getElementById('print');
-            const electronicRadio = document.getElementById('electronic');
-            const labelSection = document.querySelector('.print-container .label-section');
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const printRadio = document.getElementById('print');
+			const electronicRadio = document.getElementById('electronic');
+			const labelSection = document.querySelector('.print-container .label-section');
 
-            function toggleLabelSection() {
-                if (printRadio.checked) {
-                    labelSection.style.display = 'flex'; // Show number of labels dropdown
-                } else {
-                    labelSection.style.display = 'none'; // Hide number of labels dropdown
-                }
-            }
+			function toggleLabelSection() {
+				if (printRadio.checked) {
+					labelSection.style.display = 'flex'; // Show number of labels dropdown
+				} else {
+					labelSection.style.display = 'none'; // Hide number of labels dropdown
+				}
+			}
 
-            printRadio.addEventListener('change', toggleLabelSection);
-            electronicRadio.addEventListener('change', toggleLabelSection);
+			printRadio.addEventListener('change', toggleLabelSection);
+			electronicRadio.addEventListener('change', toggleLabelSection);
 
-            toggleLabelSection();
-        });
-    </script>
+			toggleLabelSection();
+		});
+	</script>
 </form>
 </body>
