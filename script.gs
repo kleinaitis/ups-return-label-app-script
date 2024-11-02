@@ -46,15 +46,14 @@ async function createUPSReturnLabel(form_data) {
     equipment_type: equipmentType,
     delivery_method: labelDeliveryMethod,
     ticket_number: ticketNumber = 'n/a',  // Set default value during destructuring in case of falsy/null/undefined
-    number_of_labels: numberOfLabels
+    number_of_labels: numberOfLabels = 'n/a'
   } = form_data;
 
   var userData = parseSheetForEmail(userEmail)
 
-  const { returnService, labelImageFormat, labelDelivery } = getLabelConfig(labelDeliveryMethod, userData);
+  const { returnService, labelImageFormat } = getLabelConfig(labelDeliveryMethod, userData);
 
   let postalCode = postalCodeValidation(userData[7])
-  console.log(postalCode)
 
   // Parameters require "v2403" as version as per https://developer.ups.com/api/reference?loc=en_US#operation/Shipment
   const version = 'v2403';
@@ -156,9 +155,13 @@ async function createUPSReturnLabel(form_data) {
         }
       },
       ShipmentServiceOptions: {
-        LabelDelivery: {
-          labelDelivery
-        },
+        LabelDelivery: labelDeliveryMethod === "electronic"
+          ? {
+            EMail: {
+              EMailAddress: `${userData[1]}`
+          }
+        }
+      : { LabelLinksIndicator: '' }
       },
       },
     }
@@ -177,13 +180,11 @@ function getLabelConfig(labelDeliveryMethod, userData) {
     return {
       returnService: '8',
       labelImageFormat: 'EPL',
-      labelDelivery: { EMail: { EMailAddress: userData[1] } },
     };
   } else if (labelDeliveryMethod === 'print') {
     return {
       returnService: '9',
       labelImageFormat: 'GIF',
-      labelDelivery: { LabelLinksIndicator: '' },
     };
   }
   return {};
@@ -205,7 +206,7 @@ async function createPDFReturnLabels(url, options, userData, labelDeliveryMethod
       }
     } else if (labelDeliveryMethod === 'print') {
       const labelCount = numberOfLabels;
-      var {labels, trackingNumber} = extractLabelsFromRequest(labelCount, url, options);
+      var {labels, trackingNumbers} = extractLabelsFromRequest(labelCount, url, options);
 
       var htmlTemplate = HtmlService.createTemplateFromFile('ups-template');
       htmlTemplate.labels = labels;
@@ -217,7 +218,7 @@ async function createPDFReturnLabels(url, options, userData, labelDeliveryMethod
       var file = folder.createFile(pdfBlob.setName(`${userData[0]}'s Return Label.pdf`));
       var fileUrl = file.getUrl();
 
-      showDialog(userData[1], trackingNumber, labelDeliveryMethod, fileUrl);
+      showDialog(userData[1], trackingNumbers, labelDeliveryMethod, fileUrl);
       showSidebar();
     }
   } catch (error) {
