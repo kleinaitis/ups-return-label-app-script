@@ -35,7 +35,7 @@ async function generateUPSToken() {
       }
     } catch (error) {
       SpreadsheetApp.getUi().alert('Error authenticating UPS credentials \n Error: \n' + error);
-}
+    }
 }
 
 async function createUPSReturnLabel(form_data) {
@@ -46,7 +46,7 @@ async function createUPSReturnLabel(form_data) {
     equipment_type: equipmentType,
     delivery_method: labelDeliveryMethod,
     ticket_number: ticketNumber = 'n/a',  // Set default value during destructuring in case of falsy/null/undefined
-    number_of_labels: numberofLabels
+    number_of_labels: numberOfLabels
   } = form_data;
 
   var userData = parseSheetForEmail(userEmail)
@@ -165,7 +165,7 @@ async function createUPSReturnLabel(form_data) {
   })
 }
   try {
-    await createPDFReturnLabels(url, options, userData, labelDeliveryMethod, numberofLabels);
+    await createPDFReturnLabels(url, options, userData, labelDeliveryMethod, numberOfLabels);
   } catch (error) {
     SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.\n Error: \n' + error);
     showSidebar();
@@ -189,23 +189,23 @@ function getLabelConfig(labelDeliveryMethod, userData) {
   return {};
 }
 
-async function createPDFReturnLabels(url, options, userData, labelDeliveryMethod, numberofLabels) {
+async function createPDFReturnLabels(url, options, userData, labelDeliveryMethod, numberOfLabels) {
   try {
     if (labelDeliveryMethod === 'electronic') {
       const response = await UrlFetchApp.fetch(url, options);
       if (response.getResponseCode() === 200) {
         var content = response.getContentText();
         var data = JSON.parse(content);
-        var trackingId = data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"];
-        showDialog(userData[1], trackingId, labelDeliveryMethod);
+        var trackingNumber = data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"];
+        showDialog(userData[1], trackingNumber, labelDeliveryMethod);
         showSidebar();
       } else {
         SpreadsheetApp.getUi().alert('Creation of return shipping label was not successful.');
         showSidebar();
       }
     } else if (labelDeliveryMethod === 'print') {
-      const labelCount = numberofLabels;
-      var {labels, trackingNumbers} = extractLabelsFromRequest(labelCount, url, options);
+      const labelCount = numberOfLabels;
+      var {labels, trackingNumber} = extractLabelsFromRequest(labelCount, url, options);
 
       var htmlTemplate = HtmlService.createTemplateFromFile('ups-template');
       htmlTemplate.labels = labels;
@@ -217,7 +217,7 @@ async function createPDFReturnLabels(url, options, userData, labelDeliveryMethod
       var file = folder.createFile(pdfBlob.setName(`${userData[0]}'s Return Label.pdf`));
       var fileUrl = file.getUrl();
 
-      showDialog(userData[1], fileUrl, trackingNumbers, labelDeliveryMethod);
+      showDialog(userData[1], trackingNumber, labelDeliveryMethod, fileUrl);
       showSidebar();
     }
   } catch (error) {
@@ -225,7 +225,6 @@ async function createPDFReturnLabels(url, options, userData, labelDeliveryMethod
     showSidebar();
   }
 }
-
 
 function extractLabelsFromRequest(labelCount, url, options) {
   var labels = [];
@@ -244,7 +243,6 @@ function extractLabelsFromRequest(labelCount, url, options) {
 
   return { labels, trackingNumbers };
 }
-
 
 function parseSheetForEmail(email) {
   var targetSheet = SpreadsheetApp.getActive().getSheetByName('rplSelect');;
@@ -354,7 +352,7 @@ function showSidebar() {
       .showSidebar(html);
 }
 
-function showDialog(usersName, identifier, trackingNumbers, labelDeliveryMethod) {
+function showDialog(userEmail, trackingNumber, labelDeliveryMethod, printLabelURL) {
    var htmlContent;
    if (labelDeliveryMethod === 'electronic') {
        // Message for electronic return label
@@ -364,62 +362,65 @@ function showDialog(usersName, identifier, trackingNumbers, labelDeliveryMethod)
               <style>
                 body {
                   overflow: hidden;
-                  margin: 0;
                   padding: 0;
+                  line-height: 15px;
+                  }
+                div {
+                  margin-bottom: 15px;
                 }
               </style>
             </head>
             <body>
-              <p>Return shipping label successfully created for ${usersName}.</p>
-              <p>Tracking Number: <b>${identifier}<b></p>
+              <div>Return shipping label successfully sent to ${userEmail}.</div>
+              <div style="text-decoration-line: underline; margin-bottom: 5px">Tracking Number:\n </div>
+              <div>${trackingNumber}</div>
             </body>
            </html>
        `;
        var htmlOutput = HtmlService.createHtmlOutput(htmlContent)
-              .setWidth(262.5)
-              .setHeight(87.5);
+       .setWidth(262.5)
+       .setHeight(87.5);
 
    } else if (labelDeliveryMethod === 'print') {
-            // Message for print return label
-            htmlContent = `
-                <html>
-                 <head>
-                   <style>
-                     body {
-                       overflow: hidden;
-                       padding: 0;
-                       line-height: 15px;
-                       }
-                     div {
-                       margin-bottom: 15px;
-                     }
-
-                     a {
-                       width: 100%;
-                       padding: 5px;
-                       border: 1px solid lightgrey;
-                       border-radius: 0.5rem;
-                       background-color: #f2f2f2;
-                       outline-color: transparent;
-                       color: black;
-                       text-align: center;
-                       text-decoration: none;
-                     }
-                 </style>
-               </head>
-                 <body>
-                   <div>Return shipping label(s) successfully created for ${userEmail}.</div>
-                   <div style="text-decoration-line: underline; margin-bottom: 5px">Tracking Number(s):\n </div>
-                   <div style="white-space: pre">${trackingNumber.join('\n')}</div>
-                   <div style="padding-top: 7px">
-                       <a href="${printLabelURL}" target="_blank">Open File in Google Drive</a>
-                   </div>
-                 </body>
-                </html>
-            `;
-             var htmlOutput = HtmlService.createHtmlOutput(htmlContent)
-                   .setWidth(262.5)
-                   .setHeight(175);
+       // Message for print return label
+       htmlContent = `
+           <html>
+            <head>
+              <style>
+                body {
+                  overflow: hidden;
+                  padding: 0;
+                  line-height: 15px;
+                  }
+                div {
+                  margin-bottom: 15px;
+                }
+                a {
+                  width: 100%;
+                  padding: 5px;
+                  border: 1px solid lightgrey;
+                  border-radius: 0.5rem;
+                  background-color: #f2f2f2;
+                  outline-color: transparent;
+                  color: black;
+                  text-align: center;
+                  text-decoration: none;
+                }
+            </style>
+          </head>
+            <body>
+              <div>Return shipping label(s) successfully created for ${userEmail}.</div>
+              <div style="text-decoration-line: underline; margin-bottom: 5px">Tracking Number(s):\n </div>
+              <div style="white-space: pre">${trackingNumber.join('\n')}</div>
+              <div style="padding-top: 7px">
+                  <a href="${printLabelURL}" target="_blank">Open File in Google Drive</a>
+              </div>
+            </body>
+           </html>
+       `;
+       var htmlOutput = HtmlService.createHtmlOutput(htmlContent)
+       .setWidth(262.5)
+       .setHeight(175);
    }
 
    // Show the modal dialog
