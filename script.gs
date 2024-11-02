@@ -375,6 +375,10 @@ function showDialog(usersName, identifier, trackingNumbers, labelDeliveryMethod)
             </body>
            </html>
        `;
+       var htmlOutput = HtmlService.createHtmlOutput(htmlContent)
+              .setWidth(262.5)
+              .setHeight(87.5);
+
    } else if (labelDeliveryMethod === 'print') {
             // Message for print return label
             htmlContent = `
@@ -413,12 +417,10 @@ function showDialog(usersName, identifier, trackingNumbers, labelDeliveryMethod)
                  </body>
                 </html>
             `;
+             var htmlOutput = HtmlService.createHtmlOutput(htmlContent)
+                   .setWidth(262.5)
+                   .setHeight(175);
    }
-
-   // Create an HTML output object
-   var htmlOutput = HtmlService.createHtmlOutput(htmlContent)
-       .setWidth(300)
-       .setHeight(150);
 
    // Show the modal dialog
    SpreadsheetApp.getUi().showModalDialog(htmlOutput, 'Label Created');
