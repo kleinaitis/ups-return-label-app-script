@@ -205,7 +205,7 @@ async function createPDFReturnLabels(url, options, userData, labelDeliveryMethod
       }
     } else if (labelDeliveryMethod === 'print') {
       const labelCount = numberofLabels;
-      var labels = extractLabelsFromRequest(labelCount, url, options);
+      var {labels, trackingNumbers} = extractLabelsFromRequest(labelCount, url, options);
 
       var htmlTemplate = HtmlService.createTemplateFromFile('ups-template');
       htmlTemplate.labels = labels;
@@ -217,7 +217,7 @@ async function createPDFReturnLabels(url, options, userData, labelDeliveryMethod
       var file = folder.createFile(pdfBlob.setName(`${userData[0]}'s Return Label.pdf`));
       var fileUrl = file.getUrl();
 
-      showDialog(userData[1], fileUrl, labelDeliveryMethod);
+      showDialog(userData[1], fileUrl, trackingNumbers, labelDeliveryMethod);
       showSidebar();
     }
   } catch (error) {
@@ -229,17 +229,20 @@ async function createPDFReturnLabels(url, options, userData, labelDeliveryMethod
 
 function extractLabelsFromRequest(labelCount, url, options) {
   var labels = [];
+  var trackingNumbers = [];
 
   for (var i = 0; i < labelCount; i++) {
     var response = UrlFetchApp.fetch(url, options);
     if (response.getResponseCode() === 200) {
       var data = JSON.parse(response.getContentText());
       var labelData = data["ShipmentResponse"]["ShipmentResults"]["PackageResults"][0]["ShippingLabel"]["GraphicImage"];
+      var trackingID = data["ShipmentResponse"]["ShipmentResults"]["ShipmentIdentificationNumber"];
       labels.push(`data:image/gif;base64,${labelData}`);  // Store base64 label image in the array
+      trackingNumbers.push(trackingID);
     }
   }
 
-  return labels;
+  return { labels, trackingNumbers };
 }
 
 
@@ -351,7 +354,7 @@ function showSidebar() {
       .showSidebar(html);
 }
 
-function showDialog(usersName, identifier, labelDeliveryMethod) {
+function showDialog(usersName, identifier, trackingNumbers, labelDeliveryMethod) {
    var htmlContent;
    if (labelDeliveryMethod === 'electronic') {
        // Message for electronic return label
@@ -367,30 +370,49 @@ function showDialog(usersName, identifier, labelDeliveryMethod) {
               </style>
             </head>
             <body>
-              <p>Return shipping label was successfully created for ${usersName}.</p>
+              <p>Return shipping label successfully created for ${usersName}.</p>
               <p>Tracking Number: <b>${identifier}<b></p>
             </body>
            </html>
        `;
    } else if (labelDeliveryMethod === 'print') {
-       // Message for print return label
-       htmlContent = `
-           <html>
-            <head>
-              <style>
-                body {
-                  overflow: hidden;
-                  margin: 0;
-                  padding: 0;
-                }
-              </style>
-            </head>
-            <body>
-                <p>Return shipping label was successfully created for ${usersName}.</p>
-                <p>Download your label(s): <a href="${identifier}" target="_blank">${identifier}</a></p>
-            </body>
-           </html>
-       `;
+            // Message for print return label
+            htmlContent = `
+                <html>
+                 <head>
+                   <style>
+                     body {
+                       overflow: hidden;
+                       padding: 0;
+                       line-height: 15px;
+                       }
+                     div {
+                       margin-bottom: 15px;
+                     }
+
+                     a {
+                       width: 100%;
+                       padding: 5px;
+                       border: 1px solid lightgrey;
+                       border-radius: 0.5rem;
+                       background-color: #f2f2f2;
+                       outline-color: transparent;
+                       color: black;
+                       text-align: center;
+                       text-decoration: none;
+                     }
+                 </style>
+               </head>
+                 <body>
+                   <div>Return shipping label(s) successfully created for ${userEmail}.</div>
+                   <div style="text-decoration-line: underline; margin-bottom: 5px">Tracking Number(s):\n </div>
+                   <div style="white-space: pre">${trackingNumber.join('\n')}</div>
+                   <div style="padding-top: 7px">
+                       <a href="${printLabelURL}" target="_blank">Open File in Google Drive</a>
+                   </div>
+                 </body>
+                </html>
+            `;
    }
 
    // Create an HTML output object
