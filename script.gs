@@ -45,12 +45,12 @@ async function createUPSReturnLabel(form_data) {
     user_email: userEmail,
     equipment_type: equipmentType,
     delivery_method: labelDeliveryMethod,
-    ticket_number: ticketNumber = 'n/a',  // Set default value during destructuring in case of falsy/null/undefined
+    ticket_number: rawTicketNumber,
     number_of_labels: numberOfLabels = 'n/a'
   } = form_data;
 
+  let ticketNumber = rawTicketNumber || 'n/a';
   var userData = parseSheetForEmail(userEmail)
-
   const { returnService, labelImageFormat } = getLabelConfig(labelDeliveryMethod, userData);
 
   let postalCode = postalCodeValidation(userData[7])
@@ -380,7 +380,7 @@ function showDialog(userEmail, trackingNumber, labelDeliveryMethod, printLabelUR
        `;
        var htmlOutput = HtmlService.createHtmlOutput(htmlContent)
        .setWidth(262.5)
-       .setHeight(87.5);
+       .setHeight(131.25);
 
    } else if (labelDeliveryMethod === 'print') {
        // Message for print return label
