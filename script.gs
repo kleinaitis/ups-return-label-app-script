@@ -248,6 +248,7 @@ function extractLabelsFromRequest(labelCount, url, options) {
 function parseSheetForEmail(email) {
   var targetSheet = SpreadsheetApp.getActive().getSheetByName('rplSelect');;
   var textFinder = targetSheet.createTextFinder(email)
+  textFinder.matchEntireCell(true);
   var foundRange = textFinder.findNext();
 
   if (foundRange) {
