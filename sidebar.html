@@ -7,12 +7,8 @@
 		font-family: Inter, sans-serif;
 	}
 
-	.user-email label, .ticket-number label {
-		display: block;
-		text-align: center;
-	}
-
 	input[type="text"], input[type="email"], input[type="submit"] {
+		margin: 0 5px 0px 5px;
 		border-radius: 0.5rem;
 		border: 1px solid lightgrey;
 		height: 29.5px;
@@ -36,7 +32,7 @@
 	}
 
 	.form-container {
-		padding: 20px 5px 0 5px;
+		padding-top: 20px;
 		border: 1px solid lightgrey;
 		border-radius: 0.5rem;
 		background-color: white;
@@ -215,6 +211,40 @@
 		fill: #2230ff;
 	}
 
+	.user-email label, .ticket-number label {
+		display: block;
+		text-align: center;
+	}
+
+	.icons .tooltiptext {
+		visibility: hidden;
+		width: 136.5px;
+		font-size: 12px;
+		background-color: #2260ff;
+		color: #fff;
+		text-align: center;
+		border-radius: 6px;
+		position: absolute;
+		z-index: 1;
+	}
+
+	.icons:hover .tooltiptext {
+		visibility: visible;
+		margin-top: 16px;
+		margin-left: -68px;
+	}
+
+	.icons .tooltiptext::after {
+		content: " ";
+		position: absolute;
+		bottom: 100%;
+		left: 50%;
+		margin-left: -5px;
+		border-width: 5px;
+		border-style: solid;
+		border-color: transparent transparent #2260ff transparent;
+	}
+
 </style>
 
 <body>
@@ -343,6 +373,7 @@
 
 	<div class="bottom-bar-icons">
 		<div class="icons">
+			<span class="tooltiptext">Open Google Drive Folder</span>
 			<a href="https://drive.google.com/drive/u/0/folders/10eL4aBDGKGjtDrby6O-X0VMltkwCfnCo" target="_blank">
 				<div class="drive-icon">
 					<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="12" height="12" viewBox="0 0 50 50">
