@@ -17,6 +17,10 @@
 		box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 	}
 
+	input[type="text"]:focus-visible, input[type="email"]:focus-visible {
+		outline: #2260ff auto 1px;
+	}
+
 	input[type="submit"] {
 		cursor: pointer;
 		font-size: 16px;
@@ -243,6 +247,10 @@
 		border-width: 5px;
 		border-style: solid;
 		border-color: transparent transparent #2260ff transparent;
+	}
+
+	::picker(select) {
+		border: none;
 	}
 
 </style>
